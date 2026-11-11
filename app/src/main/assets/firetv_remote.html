@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="dark h-full">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#0b0f19" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0e17" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>FireControl — Complete Phone &amp; Fire TV Stick Remote (Bonus Edition)</title>
+  <title>FireControl — Fire TV Stick Remote</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,1535 +14,477 @@
   <style>
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #0b0f19;
+      background-color: #080c14;
       color: #f1f5f9;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      touch-action: manipulation;
     }
     .mono {
       font-family: 'JetBrains Mono', monospace;
     }
-    /* Tactile Remote Styling */
-    .remote-shell {
-      background: linear-gradient(165deg, #1e2433 0%, #111520 60%, #0b0e16 100%);
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.12);
-    }
     .remote-btn {
-      background: linear-gradient(180deg, #283044 0%, #1b2230 100%);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-      transition: all 0.12s cubic-bezier(0.4, 0, 0.2, 1);
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .remote-btn:hover {
-      background: linear-gradient(180deg, #323c54 0%, #222a3b 100%);
+      background: linear-gradient(180deg, #242c3d 0%, #161c28 100%);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .remote-btn:active, .remote-btn.active-press {
-      transform: translateY(2px) scale(0.96);
+      transform: translateY(1.5px) scale(0.96);
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(0, 0, 0, 0.4);
-      background: linear-gradient(180deg, #1e2536 0%, #151b26 100%);
+      background: linear-gradient(180deg, #1b212f 0%, #111620 100%);
     }
     .dpad-ring {
-      background: radial-gradient(circle at 50% 35%, #2a3347 0%, #171d2b 75%, #111621 100%);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.12);
+      background: radial-gradient(circle at 50% 35%, #232c3f 0%, #141a27 75%, #0e121c 100%);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.12);
     }
     .dpad-center {
-      background: radial-gradient(circle at 50% 30%, #37435e 0%, #1f2738 90%);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.18);
+      background: radial-gradient(circle at 50% 30%, #303b54 0%, #1b2233 90%);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.16);
     }
-    .dpad-center:active, .dpad-center.active-press {
+    .dpad-center:active {
       transform: scale(0.95);
-      background: radial-gradient(circle at 50% 50%, #252e42 0%, #161c29 100%);
+      background: radial-gradient(circle at 50% 50%, #202738 0%, #131824 100%);
     }
     .touchpad-surface {
-      background: radial-gradient(circle at 50% 30%, #232c40 0%, #131824 85%);
-      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.75), 0 4px 12px rgba(0, 0, 0, 0.4);
+      background: radial-gradient(circle at 50% 30%, #1d2538 0%, #101522 85%);
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.8), 0 4px 12px rgba(0, 0, 0, 0.4);
       touch-action: none;
-    }
-    .tv-screen {
-      background: radial-gradient(circle at 80% 20%, #1e293b 0%, #090d16 70%);
-    }
-    .highlight-pulse {
-      animation: pulseRing 1.8s infinite;
-    }
-    @keyframes pulseRing {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.5); }
-      50% { box-shadow: 0 0 0 6px rgba(56, 189, 248, 0); }
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-sky-500 selection:text-white">
+<body class="h-full flex flex-col justify-between max-w-md mx-auto p-4 sm:p-5 select-none overflow-x-hidden">
 
-  <!-- Top Navigation & Beginner Step Banner -->
-  <header class="border-b border-slate-800/80 bg-slate-900/75 backdrop-blur sticky top-0 z-30">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center shadow-lg shadow-orange-500/20 font-bold text-white text-sm">
-          FTV
-        </div>
-        <div>
-          <div class="flex items-center gap-2 flex-wrap">
-            <h1 class="font-bold text-base sm:text-lg tracking-tight text-white">FireControl Studio</h1>
-            <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-              Complete App + Bonus: Voice Control &amp; Phone Haptics
-            </span>
-          </div>
-          <p class="text-xs text-slate-400">Ready for Phone &amp; Fire TV Stick — Wi-Fi ADB (`:5555`) + Offline Bluetooth HID</p>
-        </div>
-      </div>
+  <!-- TOP BAR: Device Selector, Connection Pill & Settings Modal Toggle -->
+  <header class="flex items-center justify-between gap-2 mb-3">
+    <!-- Active Target Device Pill -->
+    <button id="btnOpenDeviceModal" type="button" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/90 border border-slate-800 text-xs text-slate-200 hover:border-slate-700 transition">
+      <span id="topLedDot" class="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_#38bdf8]"></span>
+      <span id="topDeviceName" class="font-semibold truncate max-w-[170px]">Living Room Fire TV</span>
+      <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+    </button>
 
-      <!-- View Switcher Tabs & Sound/Haptics Toggles -->
-      <div class="flex items-center gap-2 flex-wrap">
-        <div class="inline-flex rounded-lg bg-slate-800/90 p-1 border border-slate-700/70" role="tablist">
-          <button id="tabBtnSimulator" type="button" class="px-3 py-1.5 rounded-md text-xs font-medium transition-colors bg-sky-600 text-white shadow" data-tab="simulator">
-            1. Try Live Remote
-          </button>
-          <button id="tabBtnWalkthrough" type="button" class="px-3 py-1.5 rounded-md text-xs font-medium transition-colors text-slate-300 hover:text-white" data-tab="walkthrough">
-            2. How Step 1 Works
-          </button>
-          <button id="tabBtnBridge" type="button" class="px-3 py-1.5 rounded-md text-xs font-medium transition-colors text-slate-300 hover:text-white" data-tab="bridge">
-            3. Real Fire TV Setup
-          </button>
-        </div>
+    <!-- Right Controls: Toggle Touchpad Mode & Settings -->
+    <div class="flex items-center gap-1.5">
+      <button id="btnToggleTouchpad" type="button" class="px-2.5 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-xs text-indigo-300 hover:border-indigo-500/50 flex items-center gap-1 transition" title="Toggle between D-Pad Ring and Swipe Touchpad">
+        <span id="touchpadIcon">👆</span>
+        <span id="touchpadText" class="text-[11px] font-medium hidden sm:inline">Touchpad</span>
+      </button>
 
-        <button id="btnToggleHaptics" type="button" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-slate-300 flex items-center gap-1.5 transition" title="Toggle phone haptic vibration">
-          <span id="hapticsIcon">📳</span>
-          <span class="hidden sm:inline">Haptics</span>
-        </button>
-
-        <button id="soundToggleBtn" type="button" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-slate-300 flex items-center gap-1.5 transition" title="Toggle click sound effects">
-          <span id="soundIcon">🔊</span>
-          <span id="soundLabel" class="hidden sm:inline">Click Audio</span>
-        </button>
-      </div>
+      <button id="btnOpenSettingsModal" type="button" class="w-8 h-8 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-300 hover:text-white transition" title="Settings & Connection Mode">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      </button>
     </div>
   </header>
 
-  <!-- Main Workspace -->
-  <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+  <!-- QUICK ACTION ROW: Power, Voice Mic & Search -->
+  <div class="flex items-center justify-between gap-3 px-2 mb-3">
+    <button id="btnPower" type="button" data-action="POWER" class="remote-btn w-12 h-12 rounded-2xl flex items-center justify-center text-rose-400 hover:text-rose-300 border border-slate-800" title="Power / Sleep (KEYCODE_POWER: 26)">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v9m6.364-6.364a9 9 0 11-12.728 0"/></svg>
+    </button>
 
-    <!-- LEFT COLUMN: Physical Fire TV Remote Control (Always Accessible) -->
-    <section class="lg:col-span-4 flex flex-col items-center">
-      <div class="w-full max-w-[300px] remote-shell rounded-[44px] p-6 border border-slate-700/70 flex flex-col items-center relative">
-        
-        <!-- Top Status LED, Voice Mic, Search Button & Power Indicator -->
-        <div class="w-full flex items-center justify-between mb-3 px-1">
-          <div class="flex items-center gap-2">
-            <span id="remoteLed" class="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_#38bdf8] transition-all duration-150"></span>
-            <span id="remoteModeBadge" class="text-[11px] font-semibold uppercase tracking-wider text-sky-400 mono">ADB Wi-Fi</span>
-          </div>
-          <div class="flex items-center gap-1.5">
-            <button id="btnVoiceAssist" type="button" data-action="VOICE_ASSIST" class="remote-btn w-9 h-9 rounded-full flex items-center justify-center text-amber-400 hover:text-amber-300 border border-slate-700/60" title="Voice Assistant (KEYCODE_VOICE_ASSIST: 231)">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8" />
-              </svg>
-            </button>
-            <button id="btnSearch" type="button" data-action="SEARCH" class="remote-btn w-9 h-9 rounded-full flex items-center justify-center text-sky-400 hover:text-sky-300 border border-slate-700/60" title="Open TV Search (KEYCODE_SEARCH: 84)">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z" />
-              </svg>
-            </button>
-            <button id="btnPower" type="button" data-action="POWER" class="remote-btn w-9 h-9 rounded-full flex items-center justify-center text-rose-400 hover:text-rose-300 border border-slate-700/60" title="Power / Sleep (KEYCODE_POWER: 26)">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v9m6.364-6.364a9 9 0 11-12.728 0" />
-              </svg>
-            </button>
-          </div>
-        </div>
+    <!-- Voice Assistant Mic Button -->
+    <button id="btnVoiceAssist" type="button" class="remote-btn flex-1 h-12 rounded-2xl flex items-center justify-center gap-2 text-amber-400 border border-amber-500/30 bg-amber-500/10 active:scale-95 transition" title="Voice Search / Assistant (KEYCODE_VOICE_ASSIST: 231)">
+      <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/>
+      </svg>
+      <span id="voiceLabel" class="text-xs font-semibold text-amber-300">Voice Assistant</span>
+    </button>
 
-        <!-- Active Profile Indicator Pill & Step 3 D-Pad / Touchpad Mode Switcher -->
-        <div class="w-full mb-2 px-1 space-y-1.5">
-          <div class="w-full py-1 px-2.5 rounded-full bg-slate-900/90 border border-slate-800 flex items-center justify-between text-[10px] text-slate-400">
-            <span>Target:</span>
-            <span id="remoteActiveProfileName" class="font-semibold text-slate-200 truncate max-w-[165px]">Living Room Fire TV 4K</span>
-          </div>
-          <button id="btnToggleTouchpad" type="button" class="w-full py-1.5 px-3 rounded-xl bg-indigo-500/15 hover:bg-indigo-500/25 border border-indigo-500/30 text-[11px] font-medium text-indigo-200 flex items-center justify-center gap-1.5 transition">
-            <span>👆</span>
-            <span id="touchpadToggleLabel">Switch to Swipe Touchpad (Step 3)</span>
-          </button>
-        </div>
+    <button id="btnSearch" type="button" data-action="SEARCH" class="remote-btn w-12 h-12 rounded-2xl flex items-center justify-center text-sky-400 hover:text-sky-300 border border-slate-800" title="Open TV Search (KEYCODE_SEARCH: 84)">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z"/></svg>
+    </button>
+  </div>
 
-        <!-- Circular D-Pad Navigation Ring (Default Mode) -->
-        <div id="dpadContainer" class="relative w-48 h-48 rounded-full dpad-ring my-2 flex items-center justify-center border border-slate-700/60">
-          <!-- UP -->
-          <button id="btnUp" type="button" data-action="UP" class="absolute top-1.5 left-1/2 -translate-x-1/2 w-16 h-12 rounded-t-full flex items-start justify-center pt-2.5 text-slate-300 hover:text-white active:scale-95 transition" title="Move Up (KEYCODE_DPAD_UP: 19 | HID: 0x52)">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
-          </button>
-          <!-- DOWN -->
-          <button id="btnDown" type="button" data-action="DOWN" class="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-16 h-12 rounded-b-full flex items-end justify-center pb-2.5 text-slate-300 hover:text-white active:scale-95 transition" title="Move Down (KEYCODE_DPAD_DOWN: 20 | HID: 0x51)">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-          </button>
-          <!-- LEFT -->
-          <button id="btnLeft" type="button" data-action="LEFT" class="absolute left-1.5 top-1/2 -translate-y-1/2 w-12 h-16 rounded-l-full flex items-center justify-start pl-2.5 text-slate-300 hover:text-white active:scale-95 transition" title="Move Left (KEYCODE_DPAD_LEFT: 21 | HID: 0x50)">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-          </button>
-          <!-- RIGHT -->
-          <button id="btnRight" type="button" data-action="RIGHT" class="absolute right-1.5 top-1/2 -translate-y-1/2 w-12 h-16 rounded-r-full flex items-center justify-end pr-2.5 text-slate-300 hover:text-white active:scale-95 transition" title="Move Right (KEYCODE_DPAD_RIGHT: 22 | HID: 0x4F)">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-          </button>
+  <!-- MAIN NAVIGATION AREA: D-Pad Ring (Default) OR Swipe Touchpad -->
+  <div class="my-auto flex flex-col items-center justify-center py-2">
+    <!-- 1. Circular D-Pad Ring -->
+    <div id="dpadContainer" class="relative w-64 h-64 sm:w-72 sm:h-72 rounded-full dpad-ring flex items-center justify-center border border-slate-700/60 transition-all">
+      <!-- UP -->
+      <button id="btnUp" type="button" data-action="UP" class="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-16 rounded-t-full flex items-start justify-center pt-3 text-slate-300 hover:text-white active:scale-95 transition" title="Move Up">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+      </button>
+      <!-- DOWN -->
+      <button id="btnDown" type="button" data-action="DOWN" class="absolute bottom-2 left-1/2 -translate-x-1/2 w-24 h-16 rounded-b-full flex items-end justify-center pb-3 text-slate-300 hover:text-white active:scale-95 transition" title="Move Down">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </button>
+      <!-- LEFT -->
+      <button id="btnLeft" type="button" data-action="LEFT" class="absolute left-2 top-1/2 -translate-y-1/2 w-16 h-24 rounded-l-full flex items-center justify-start pl-3 text-slate-300 hover:text-white active:scale-95 transition" title="Move Left">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+      <!-- RIGHT -->
+      <button id="btnRight" type="button" data-action="RIGHT" class="absolute right-2 top-1/2 -translate-y-1/2 w-16 h-24 rounded-r-full flex items-center justify-end pr-3 text-slate-300 hover:text-white active:scale-95 transition" title="Move Right">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </button>
 
-          <!-- CENTER / SELECT -->
-          <button id="btnSelect" type="button" data-action="SELECT" class="w-20 h-20 rounded-full dpad-center border border-slate-600/60 flex flex-col items-center justify-center text-slate-100 hover:text-white transition" title="Select / OK (KEYCODE_DPAD_CENTER: 23)">
-            <span class="text-xs font-semibold tracking-wider uppercase">Select</span>
-            <span class="text-[10px] text-slate-400 mono">OK</span>
-          </button>
-        </div>
+      <!-- CENTER SELECT -->
+      <button id="btnSelect" type="button" data-action="SELECT" class="w-28 h-28 rounded-full dpad-center border border-slate-600/70 flex flex-col items-center justify-center text-white active:scale-95 transition shadow-lg" title="Select / OK">
+        <span class="text-sm font-bold tracking-wider uppercase">Select</span>
+        <span class="text-[10px] text-slate-400 mono">OK</span>
+      </button>
+    </div>
 
-        <!-- Step 3: Interactive Swipe-and-Tap Touchpad Surface -->
-        <div id="touchpadContainer" class="hidden flex-col items-center my-2 w-full">
-          <div class="relative w-48 h-48 rounded-3xl touchpad-surface border border-indigo-500/50 overflow-hidden flex items-center justify-center cursor-crosshair">
-            <canvas id="touchpadCanvas" width="192" height="192" class="absolute inset-0 w-full h-full"></canvas>
-            <div class="pointer-events-none text-center px-3">
-              <div class="text-xs font-semibold text-indigo-200/90">Swipe Up/Down/Left/Right</div>
-              <div class="text-[10px] text-slate-400 mt-0.5">Tap Center = Select (`23`)</div>
-              <div id="touchpadDeltaReadout" class="text-[10px] mono text-sky-300 mt-2 bg-slate-950/75 px-2 py-0.5 rounded">
-                Ready for gesture
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- System Navigation Row: Back, Home, Menu -->
-        <div class="grid grid-cols-3 gap-3 w-full mt-4">
-          <button id="btnBack" type="button" data-action="BACK" class="remote-btn h-11 rounded-2xl flex flex-col items-center justify-center text-slate-200 border border-slate-700/50" title="Back (KEYCODE_BACK: 4)">
-            <svg class="w-4 h-4 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l-4-4 4-4"/><path stroke-linecap="round" stroke-linejoin="round" d="M5 10h11a4 4 0 110 8h-1"/></svg>
-            <span class="text-[10px] text-slate-400">Back</span>
-          </button>
-          <button id="btnHome" type="button" data-action="HOME" class="remote-btn h-11 rounded-2xl flex flex-col items-center justify-center text-slate-200 border border-slate-700/50" title="Home (KEYCODE_HOME: 3)">
-            <svg class="w-4 h-4 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-9.5z"/></svg>
-            <span class="text-[10px] text-slate-400">Home</span>
-          </button>
-          <button id="btnMenu" type="button" data-action="MENU" class="remote-btn h-11 rounded-2xl flex flex-col items-center justify-center text-slate-200 border border-slate-700/50" title="Menu (KEYCODE_MENU: 82)">
-            <svg class="w-4 h-4 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
-            <span class="text-[10px] text-slate-400">Menu</span>
-          </button>
-        </div>
-
-        <!-- Media Row: Rewind, Play/Pause, Fast Forward -->
-        <div class="grid grid-cols-3 gap-3 w-full mt-3">
-          <button id="btnRewind" type="button" data-action="REWIND" class="remote-btn h-11 rounded-2xl flex items-center justify-center text-slate-200 border border-slate-700/50" title="Rewind (KEYCODE_MEDIA_REWIND: 89)">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/></svg>
-          </button>
-          <button id="btnPlayPause" type="button" data-action="PLAY_PAUSE" class="remote-btn h-11 rounded-2xl flex items-center justify-center text-slate-200 border border-slate-700/50" title="Play/Pause (KEYCODE_MEDIA_PLAY_PAUSE: 85)">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-          </button>
-          <button id="btnFastForward" type="button" data-action="FAST_FORWARD" class="remote-btn h-11 rounded-2xl flex items-center justify-center text-slate-200 border border-slate-700/50" title="Fast Forward (KEYCODE_MEDIA_FAST_FORWARD: 90)">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/></svg>
-          </button>
-        </div>
-
-        <!-- Volume Control Row: Vol Down, Mute, Vol Up -->
-        <div class="grid grid-cols-3 gap-3 w-full mt-3 items-center">
-          <button id="btnVolDown" type="button" data-action="VOL_DOWN" class="remote-btn h-14 rounded-2xl flex flex-col items-center justify-center text-slate-100 border border-slate-700/60" title="Volume Down (KEYCODE_VOLUME_DOWN: 25 | HID: 0x81)">
-            <span class="text-lg font-bold leading-none">−</span>
-            <span class="text-[10px] text-slate-400 mt-0.5">Vol</span>
-          </button>
-
-          <button id="btnMute" type="button" data-action="MUTE" class="remote-btn h-11 rounded-2xl flex flex-col items-center justify-center text-slate-200 border border-slate-700/50" title="Mute (KEYCODE_VOLUME_MUTE: 164)">
-            <svg class="w-4 h-4 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
-            <span class="text-[10px] text-slate-400">Mute</span>
-          </button>
-
-          <button id="btnVolUp" type="button" data-action="VOL_UP" class="remote-btn h-14 rounded-2xl flex flex-col items-center justify-center text-slate-100 border border-slate-700/60" title="Volume Up (KEYCODE_VOLUME_UP: 24)">
-            <span class="text-lg font-bold leading-none">+</span>
-            <span class="text-[10px] text-slate-400 mt-0.5">Vol</span>
-          </button>
-        </div>
-
-        <!-- Step 2 Mini Quick-App Buttons on Physical Remote -->
-        <div class="grid grid-cols-2 gap-2.5 w-full mt-3 pt-3 border-t border-slate-800/70">
-          <button type="button" data-launch-pkg="com.amazon.avod" data-launch-name="Prime Video" class="remote-btn py-2 px-2.5 rounded-xl text-[11px] font-semibold text-sky-300 border border-sky-500/30 flex items-center justify-center gap-1">
-            <span>🎬</span><span>Prime Video</span>
-          </button>
-          <button type="button" data-launch-pkg="com.netflix.ninja" data-launch-name="Netflix" class="remote-btn py-2 px-2.5 rounded-xl text-[11px] font-semibold text-rose-300 border border-rose-500/30 flex items-center justify-center gap-1">
-            <span>🍿</span><span>Netflix</span>
-          </button>
-        </div>
-
-        <!-- Keyboard Shortcut Hint Footer -->
-        <div class="mt-3 pt-2.5 border-t border-slate-800/80 w-full text-center">
-          <p class="text-[11px] text-slate-400">
-            Keyboard: <span class="mono text-slate-300">Arrows</span>, <span class="mono text-slate-300">Enter</span>, <span class="mono text-slate-300">+/-</span>, <span class="mono text-slate-300">H</span> (Home), <span class="mono text-slate-300">M</span> (Menu)
-          </p>
+    <!-- 2. Swipe Touchpad Surface -->
+    <div id="touchpadContainer" class="hidden relative w-64 h-64 sm:w-72 sm:h-72 rounded-[36px] touchpad-surface border border-indigo-500/50 flex items-center justify-center overflow-hidden">
+      <canvas id="touchpadCanvas" width="280" height="280" class="absolute inset-0 w-full h-full cursor-crosshair"></canvas>
+      <div class="pointer-events-none text-center px-4">
+        <div class="text-xs font-semibold text-indigo-200">Swipe to Navigate</div>
+        <div class="text-[11px] text-slate-400 mt-0.5">Tap Center to Select</div>
+        <div id="touchpadDeltaReadout" class="text-[10px] mono text-sky-300 mt-2 bg-slate-950/80 px-2 py-0.5 rounded">
+          Ready
         </div>
       </div>
-    </section>
+    </div>
+  </div>
 
-    <!-- RIGHT COLUMN: Dynamic Views (Simulator + Inspector, Beginner Walkthrough, Real Bridge Setup) -->
-    <section class="lg:col-span-8 flex flex-col gap-5">
+  <!-- NAVIGATION ROW: Back, Home, Menu -->
+  <div class="grid grid-cols-3 gap-3 w-full my-2">
+    <button id="btnBack" type="button" data-action="BACK" class="remote-btn h-13 py-3 rounded-2xl flex flex-col items-center justify-center text-slate-200 border border-slate-800" title="Back">
+      <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l-4-4 4-4"/><path stroke-linecap="round" stroke-linejoin="round" d="M5 10h11a4 4 0 110 8h-1"/></svg>
+      <span class="text-[11px] text-slate-400 font-medium">Back</span>
+    </button>
+    <button id="btnHome" type="button" data-action="HOME" class="remote-btn h-13 py-3 rounded-2xl flex flex-col items-center justify-center text-slate-200 border border-slate-800" title="Home">
+      <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-9.5z"/></svg>
+      <span class="text-[11px] text-slate-400 font-medium">Home</span>
+    </button>
+    <button id="btnMenu" type="button" data-action="MENU" class="remote-btn h-13 py-3 rounded-2xl flex flex-col items-center justify-center text-slate-200 border border-slate-800" title="Menu">
+      <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      <span class="text-[11px] text-slate-400 font-medium">Menu</span>
+    </button>
+  </div>
 
-      <!-- ==================== TAB 1: LIVE SIMULATOR & TRANSPORT INSPECTOR ==================== -->
-      <div id="viewSimulator" class="flex flex-col gap-5">
+  <!-- MEDIA CONTROLS & VOLUME ROCKER -->
+  <div class="grid grid-cols-6 gap-2.5 w-full my-2 items-center">
+    <!-- Media 3-Pack -->
+    <button id="btnRewind" type="button" data-action="REWIND" class="remote-btn h-12 rounded-2xl flex items-center justify-center text-slate-200 border border-slate-800" title="Rewind">
+      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/></svg>
+    </button>
+    <button id="btnPlayPause" type="button" data-action="PLAY_PAUSE" class="remote-btn h-12 rounded-2xl flex items-center justify-center text-slate-200 border border-slate-800" title="Play/Pause">
+      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+    </button>
+    <button id="btnFastForward" type="button" data-action="FAST_FORWARD" class="remote-btn h-12 rounded-2xl flex items-center justify-center text-slate-200 border border-slate-800" title="Fast Forward">
+      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z"/></svg>
+    </button>
 
-        <!-- BONUS FEATURE CARD: Voice Command Assistant & Phone-to-Fire-TV Live Bridge -->
-        <div id="cardBonusFeatures" class="rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-indigo-500/40 p-4 sm:p-5">
-          <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
-            <div>
-              <h2 class="text-sm font-bold text-white flex items-center gap-2">
-                <span>🎙️ Bonus Feature: Voice Remote &amp; Phone Bridge Hub</span>
-                <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 mono">
-                  KEYCODE_VOICE_ASSIST: 231
-                </span>
-              </h2>
-              <p class="text-xs text-slate-300 mt-0.5">
-                Speak or tap a voice command below, or connect your phone browser to `firetv_bridge.py` to control your physical Fire TV Stick with real phone haptic feedback.
-              </p>
-            </div>
-            <button id="btnStartVoice" type="button" class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-lg shadow-amber-500/20 transition">
-              <span>🎙️</span>
-              <span id="voiceBtnLabel">Speak Voice Command</span>
-            </button>
-          </div>
+    <!-- Volume 3-Pack -->
+    <button id="btnVolDown" type="button" data-action="VOL_DOWN" class="remote-btn h-12 rounded-2xl flex flex-col items-center justify-center text-white border border-slate-800 font-bold text-lg" title="Volume Down">
+      −
+    </button>
+    <button id="btnMute" type="button" data-action="MUTE" class="remote-btn h-12 rounded-2xl flex items-center justify-center text-slate-300 border border-slate-800" title="Mute">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
+    </button>
+    <button id="btnVolUp" type="button" data-action="VOL_UP" class="remote-btn h-12 rounded-2xl flex flex-col items-center justify-center text-white border border-slate-800 font-bold text-lg" title="Volume Up">
+      +
+    </button>
+  </div>
 
-          <!-- Instant Voice Command Chips -->
-          <div class="flex flex-wrap items-center gap-2 mb-3">
-            <span class="text-[11px] text-slate-400">Try voice phrase:</span>
-            <button type="button" data-voice-phrase="Open Netflix" class="voice-chip px-2.5 py-1 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-700 text-xs text-amber-200 transition">
-              "Open Netflix"
-            </button>
-            <button type="button" data-voice-phrase="Search Interstellar" class="voice-chip px-2.5 py-1 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-700 text-xs text-sky-200 transition">
-              "Search Interstellar"
-            </button>
-            <button type="button" data-voice-phrase="Volume up" class="voice-chip px-2.5 py-1 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-700 text-xs text-emerald-200 transition">
-              "Volume up"
-            </button>
-            <button type="button" data-voice-phrase="Go Home" class="voice-chip px-2.5 py-1 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-700 text-xs text-indigo-200 transition">
-              "Go Home"
-            </button>
-            <span id="voiceTranscriptReadout" class="text-xs mono text-amber-300 ml-auto">Voice ready</span>
-          </div>
+  <!-- ONE-TAP APP SHORTCUTS -->
+  <div class="grid grid-cols-4 gap-2 w-full my-2">
+    <button type="button" data-launch-pkg="com.amazon.avod" data-launch-name="Prime Video" class="remote-btn py-2.5 px-2 rounded-xl text-xs font-semibold text-sky-300 border border-sky-500/30 flex flex-col items-center justify-center gap-1">
+      <span class="text-base">🎬</span>
+      <span class="text-[10px] truncate">Prime</span>
+    </button>
+    <button type="button" data-launch-pkg="com.netflix.ninja" data-launch-name="Netflix" class="remote-btn py-2.5 px-2 rounded-xl text-xs font-semibold text-rose-300 border border-rose-500/30 flex flex-col items-center justify-center gap-1">
+      <span class="text-base">🍿</span>
+      <span class="text-[10px] truncate">Netflix</span>
+    </button>
+    <button type="button" data-launch-pkg="com.amazon.firetv.youtube" data-launch-name="YouTube" class="remote-btn py-2.5 px-2 rounded-xl text-xs font-semibold text-red-400 border border-red-500/30 flex flex-col items-center justify-center gap-1">
+      <span class="text-base">▶️</span>
+      <span class="text-[10px] truncate">YouTube</span>
+    </button>
+    <button type="button" data-launch-pkg="com.disney.disneyplus" data-launch-name="Disney+" class="remote-btn py-2.5 px-2 rounded-xl text-xs font-semibold text-indigo-300 border border-indigo-500/30 flex flex-col items-center justify-center gap-1">
+      <span class="text-base">✨</span>
+      <span class="text-[10px] truncate">Disney+</span>
+    </button>
+  </div>
 
-          <!-- Phone Bridge Host Bar -->
-          <div class="pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-2 text-xs">
-            <div class="flex items-center gap-2 flex-wrap">
-              <label for="bridgeHostInput" class="text-slate-400">Phone Bridge URL:</label>
-              <input id="bridgeHostInput" type="text" value="http://127.0.0.1:8765" class="bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1 text-xs mono text-slate-200 w-52 focus:outline-none focus:border-sky-500" />
-              <span class="text-[11px] text-slate-400">(Auto-fills when opened on your phone via `firetv_bridge.py`)</span>
-            </div>
-            <button id="btnWakeTv" type="button" data-action="WAKEUP" class="px-2.5 py-1 rounded-lg bg-emerald-600/25 hover:bg-emerald-600/40 border border-emerald-500/40 text-emerald-200 text-xs transition">
-              ☀️ Wake TV (`224`)
-            </button>
-          </div>
+  <!-- TEXT INPUT BAR FOR FAST SEARCHES (Skip typing on TV with D-Pad!) -->
+  <div class="w-full mt-2 pt-2 border-t border-slate-900 flex items-center gap-2">
+    <input id="fastSearchInput" type="text" placeholder="Type to search Fire TV..." class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-500" />
+    <button id="btnFastSendText" type="button" class="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold shrink-0 active:scale-95 transition">
+      Send ↵
+    </button>
+  </div>
+
+  <!-- MODAL 1: DEVICE PROFILE & IP SELECTOR (Clean popup) -->
+  <div id="deviceModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-5 shadow-2xl">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-sm font-bold text-white">Select Fire TV Device</h3>
+        <button id="btnCloseDeviceModal" type="button" class="text-slate-400 hover:text-white text-lg">✕</button>
+      </div>
+
+      <div id="modalProfilesList" class="space-y-2 mb-4">
+        <!-- Injected dynamically -->
+      </div>
+
+      <!-- Add New IP Row -->
+      <div class="pt-3 border-t border-slate-800">
+        <label for="newDeviceName" class="text-[11px] text-slate-400 block mb-1">Add Fire TV (IP Address)</label>
+        <div class="flex items-center gap-2 mb-2">
+          <input id="newDeviceName" type="text" placeholder="Room (e.g. Bedroom)" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-sky-500" />
+          <input id="newDeviceIp" type="text" placeholder="192.168.1.45" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs mono text-white focus:outline-none focus:border-sky-500" />
         </div>
+        <button id="btnSaveNewDevice" type="button" class="w-full py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold transition">
+          + Add &amp; Connect
+        </button>
+      </div>
+    </div>
+  </div>
 
-        <!-- Dual Transport Switcher & Saved Device Profiles Card -->
-        <div id="cardTransport" class="rounded-2xl bg-slate-900/90 border border-slate-800 p-4 sm:p-5">
-          <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
-            <div>
-              <h2 class="text-sm font-semibold text-white flex items-center gap-2">
-                <span>Dual Connectivity &amp; Saved Device Profiles</span>
-                <span id="wifiStatusPill" class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-500/30">
-                  Wi-Fi Online (192.168.1.45:5555)
-                </span>
-              </h2>
-              <p class="text-xs text-slate-400 mt-0.5">
-                Switch between saved Fire TV Sticks or toggle between Wi-Fi ADB (`:5555`) and Offline Bluetooth HID.
-              </p>
-            </div>
+  <!-- MODAL 2: SETTINGS & CONNECTION MODE (Clean popup) -->
+  <div id="settingsModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-bold text-white">Settings &amp; Connection Mode</h3>
+        <button id="btnCloseSettingsModal" type="button" class="text-slate-400 hover:text-white text-lg">✕</button>
+      </div>
 
-            <!-- Simulate Wi-Fi Outage Button -->
-            <button id="btnSimulateWifiDrop" type="button" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 transition">
-              ⚡ Simulate Fire TV Wi-Fi Drop
-            </button>
-          </div>
-
-          <!-- Saved Device Profiles Selector Bar -->
-          <div class="mb-3 p-3 rounded-xl bg-slate-950/80 border border-slate-800/90">
-            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-              <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Saved Fire TV Profiles (`localStorage`)</span>
-              <div class="flex items-center gap-1.5">
-                <input id="profileNameInput" type="text" placeholder="New room name (e.g. Patio TV)" class="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xs text-slate-200 w-40 focus:outline-none focus:border-sky-500" />
-                <button id="btnSaveProfile" type="button" class="px-2.5 py-1 rounded-lg bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/40 text-emerald-200 text-xs font-medium transition">
-                  + Save Profile
-                </button>
-              </div>
-            </div>
-            <div id="deviceProfilesList" class="flex flex-wrap gap-2">
-              <!-- Populated dynamically -->
-            </div>
-          </div>
-
-          <!-- Transport Mode Selector Pills -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <!-- Mode 1: Wi-Fi ADB -->
-            <button id="modeBtnAdb" type="button" class="text-left p-3.5 rounded-xl border transition flex items-start justify-between gap-3 bg-sky-950/40 border-sky-500/60">
-              <div>
-                <div class="flex items-center gap-2">
-                  <span class="w-2 h-2 rounded-full bg-sky-400"></span>
-                  <span class="text-xs font-semibold text-white">Mode 1: Wi-Fi ADB (Port 5555)</span>
-                </div>
-                <p class="text-[11px] text-slate-300 mt-1">
-                  Sends Android `KeyEvent`, `input swipe`, `input text`, and `monkey` commands over local Wi-Fi.
-                </p>
-              </div>
-              <span class="text-[10px] mono px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 shrink-0">TCP/IP</span>
-            </button>
-
-            <!-- Mode 2: Bluetooth HID (Works Without Wi-Fi) -->
-            <button id="modeBtnBluetooth" type="button" class="text-left p-3.5 rounded-xl border transition flex items-start justify-between gap-3 bg-slate-800/40 border-slate-700/70 hover:border-slate-600">
-              <div>
-                <div class="flex items-center gap-2">
-                  <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
-                  <span class="text-xs font-semibold text-white">Mode 2: Bluetooth HID (No Wi-Fi Needed)</span>
-                </div>
-                <p class="text-[11px] text-slate-300 mt-1">
-                  Emulates a Bluetooth HID Keyboard &amp; Remote (`0x52` Up, `0x04–0x1D` A–Z) directly over radio.
-                </p>
-              </div>
-              <span class="text-[10px] mono px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 shrink-0">BT HID</span>
-            </button>
-          </div>
-
-          <!-- Target Device Configuration Row -->
-          <div class="mt-3 pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div class="flex items-center gap-2 flex-wrap">
-              <label for="adbIpInput" class="text-slate-400">Fire TV IP:Port:</label>
-              <input id="adbIpInput" type="text" value="192.168.1.45:5555" class="bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1 text-xs mono text-slate-200 w-44 focus:outline-none focus:border-sky-500" />
-              <span id="autoFallbackNotice" class="hidden text-amber-300 text-[11px] font-medium">
-                ⚠ Wi-Fi unreachable — auto-routed to Bluetooth HID!
-              </span>
-            </div>
-            <div class="flex items-center gap-2">
-              <button id="btnWebBluetoothPair" type="button" class="px-2.5 py-1 rounded-lg bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-indigo-200 text-xs transition">
-                🔹 Scan Web Bluetooth
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Step 2 Row: Live Text-Input Keyboard & Quick App Launcher -->
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-          <!-- Text Input Keyboard Card -->
-          <div id="cardKeyboard" class="md:col-span-7 rounded-2xl bg-slate-900/90 border border-slate-800 p-4 flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between gap-2 mb-1">
-                <h3 class="text-xs font-semibold uppercase tracking-wider text-sky-400">
-                  Step 2 Feature: Live Text Keyboard
-                </h3>
-                <span class="text-[10px] mono text-slate-400">`input text` / BT HID Keys</span>
-              </div>
-              <p class="text-[11px] text-slate-400 mb-3">
-                Skip tedious D-Pad typing! Type any show title or password below—spaces automatically convert to `%s` over ADB or stream as Bluetooth HID keystrokes.
-              </p>
-              <div class="flex items-center gap-2">
-                <input id="remoteTextInput" type="text" placeholder="Type movie or search (e.g. Stranger Things)" value="Stranger Things" class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-sky-500" />
-                <button id="btnSendText" type="button" class="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold transition shrink-0">
-                  Send Text ↵
-                </button>
-              </div>
-            </div>
-
-            <div class="flex flex-wrap items-center justify-between gap-2 mt-3 pt-2.5 border-t border-slate-800/80">
-              <div class="flex items-center gap-1.5">
-                <button id="btnTriggerSearch" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] text-slate-200 transition">
-                  🔍 Open Search (`84`)
-                </button>
-                <button id="btnSendBackspace" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[11px] text-slate-200 transition">
-                  ⌫ Backspace (`67`)
-                </button>
-              </div>
-              <span class="text-[10px] text-slate-400 mono">Enter (`66`) submits</span>
-            </div>
-          </div>
-
-          <!-- One-Tap Quick App Launcher Card -->
-          <div id="cardQuickApps" class="md:col-span-5 rounded-2xl bg-slate-900/90 border border-slate-800 p-4 flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between gap-2 mb-1">
-                <h3 class="text-xs font-semibold uppercase tracking-wider text-emerald-400">
-                  Step 2 Feature: App Shortcuts
-                </h3>
-                <span class="text-[10px] mono text-slate-400">`monkey -p`</span>
-              </div>
-              <p class="text-[11px] text-slate-400 mb-2.5">
-                Launch installed Fire OS packages directly with one tap:
-              </p>
-              <div class="grid grid-cols-2 gap-2">
-                <button type="button" data-launch-pkg="com.amazon.avod" data-launch-name="Prime Video" class="px-2.5 py-1.5 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-left text-xs text-slate-200 flex items-center gap-2 transition">
-                  <span>🎬</span>
-                  <div class="truncate">
-                    <div class="font-semibold text-[11px] leading-tight">Prime Video</div>
-                    <div class="text-[9px] text-slate-400 mono truncate">com.amazon.avod</div>
-                  </div>
-                </button>
-                <button type="button" data-launch-pkg="com.netflix.ninja" data-launch-name="Netflix" class="px-2.5 py-1.5 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-left text-xs text-slate-200 flex items-center gap-2 transition">
-                  <span>🍿</span>
-                  <div class="truncate">
-                    <div class="font-semibold text-[11px] leading-tight">Netflix</div>
-                    <div class="text-[9px] text-slate-400 mono truncate">com.netflix.ninja</div>
-                  </div>
-                </button>
-                <button type="button" data-launch-pkg="com.amazon.firetv.youtube" data-launch-name="YouTube" class="px-2.5 py-1.5 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-left text-xs text-slate-200 flex items-center gap-2 transition">
-                  <span>▶️</span>
-                  <div class="truncate">
-                    <div class="font-semibold text-[11px] leading-tight">YouTube</div>
-                    <div class="text-[9px] text-slate-400 mono truncate">firetv.youtube</div>
-                  </div>
-                </button>
-                <button type="button" data-launch-pkg="com.disney.disneyplus" data-launch-name="Disney+" class="px-2.5 py-1.5 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-left text-xs text-slate-200 flex items-center gap-2 transition">
-                  <span>✨</span>
-                  <div class="truncate">
-                    <div class="font-semibold text-[11px] leading-tight">Disney+</div>
-                    <div class="text-[9px] text-slate-400 mono truncate">disneyplus</div>
-                  </div>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Step 4: Custom Multi-Key Macro Recorder & Config Export Card -->
-        <div id="cardMacroAutomation" class="rounded-2xl bg-slate-900/90 border border-slate-800 p-4 sm:p-5">
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-            <div>
-              <h3 class="text-xs font-semibold uppercase tracking-wider text-amber-400 flex items-center gap-2">
-                <span>Step 4 Feature: Multi-Key Macro Recorder &amp; Config Backup</span>
-                <span id="macroRecStatusPill" class="hidden px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[10px] mono">
-                  ● Recording Keys...
-                </span>
-              </h3>
-              <p class="text-[11px] text-slate-400">
-                Chain multiple button presses into a single one-tap routine (`adb shell input keyevent 3 22 23` or sequential Bluetooth HID reports), or export your profiles &amp; macros as JSON.
-              </p>
-            </div>
-            <div class="flex items-center gap-2">
-              <button id="btnCopyConfigJson" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-slate-200 transition">
-                📦 Copy Config JSON
-              </button>
-              <button id="btnExportConfig" type="button" class="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-200 text-xs font-medium transition">
-                ⬇ Download `.json` Backup
-              </button>
-            </div>
-          </div>
-
-          <!-- Saved & Pre-Built Macro Buttons -->
-          <div id="macroButtonsList" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mb-3">
-            <!-- Populated dynamically -->
-          </div>
-
-          <!-- Custom Macro Recorder Bar -->
-          <div class="p-3 rounded-xl bg-slate-950/90 border border-slate-800 flex flex-wrap items-center justify-between gap-2">
-            <div class="flex items-center gap-2 flex-wrap">
-              <button id="btnRecordMacro" type="button" class="px-3 py-1.5 rounded-lg bg-rose-600/30 hover:bg-rose-600/50 border border-rose-500/40 text-rose-200 text-xs font-semibold transition">
-                🔴 Record New Macro
-              </button>
-              <span id="recordedStepsPreview" class="text-xs mono text-slate-400">
-                Click "Record New Macro", press remote buttons on the left, then save!
-              </span>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <input id="macroNameInput" type="text" placeholder="Macro name (e.g. Skip Intro)" class="bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-slate-200 w-44 focus:outline-none focus:border-amber-500" />
-              <button id="btnSaveMacro" type="button" class="px-3 py-1 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold transition">
-                💾 Save Macro
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Step 3: Bluetooth HID SDP Descriptor & Connection Health Panel -->
-        <div id="cardBtDescriptor" class="rounded-2xl bg-slate-900/90 border border-slate-800 p-4 sm:p-5">
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-            <div>
-              <h3 class="text-xs font-semibold uppercase tracking-wider text-indigo-400">
-                Step 3 Feature: Bluetooth HID Descriptor &amp; Link Health Telemetry
-              </h3>
-              <p class="text-[11px] text-slate-400">
-                Inspect the USB/Bluetooth HID report descriptor bytes (`0x05, 0x01...`) that register your device as a hardware Fire TV remote without Wi-Fi.
-              </p>
-            </div>
-            <div class="flex items-center gap-2">
-              <button id="btnPingTest" type="button" class="px-2.5 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-xs font-medium transition">
-                📡 Test Link Ping
-              </button>
-              <button id="btnCopyDescriptor" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-slate-200 transition">
-                📋 Copy HID Descriptor
-              </button>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mb-3 text-xs">
-            <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
-              <span class="text-slate-400">Active Channel:</span>
-              <span id="healthChannelValue" class="mono font-semibold text-sky-300">TCP :5555 (ADB)</span>
-            </div>
-            <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
-              <span class="text-slate-400">Round-Trip Latency:</span>
-              <span id="pingLatencyBadge" class="mono font-semibold text-emerald-300">12 ms</span>
-            </div>
-            <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
-              <span class="text-slate-400">Input Mode:</span>
-              <span id="healthInputModeBadge" class="mono font-semibold text-indigo-300">D-Pad Ring</span>
-            </div>
-          </div>
-
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-            <div class="inline-flex rounded-lg bg-slate-950 p-1 border border-slate-800">
-              <button id="btnDescKeyboard" type="button" class="px-2.5 py-1 rounded text-[11px] font-medium bg-indigo-600 text-white">
-                Keyboard Page (`0x07`) — D-Pad &amp; Text
-              </button>
-              <button id="btnDescConsumer" type="button" class="px-2.5 py-1 rounded text-[11px] font-medium text-slate-400 hover:text-white">
-                Consumer Page (`0x0C`) — Volume &amp; Media
-              </button>
-            </div>
-            <a href="https://developer.android.com/reference/android/bluetooth/BluetoothHidDeviceAppSdpSettings" target="_blank" rel="noopener noreferrer" class="text-[11px] text-indigo-400 hover:underline">
-              Android SDP Settings Docs ↗
-            </a>
-          </div>
-
-          <pre id="hidDescriptorCode" class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-[11px] mono text-indigo-200 overflow-x-auto leading-relaxed">0x05, 0x01, // Usage Page (Generic Desktop Ctrls)
-0x09, 0x06, // Usage (Keyboard) — Works with Fire TV Stick over Bluetooth!
-0xA1, 0x01, // Collection (Application)
-0x05, 0x07, //   Usage Page (Kbrd/Keypad) -> Arrow Up (0x52), Down (0x51), Left (0x50), Right (0x4F)
-0x19, 0x00, 0x29, 0xFF, 0x15, 0x00, 0x25, 0xFF, 0x75, 0x08, 0x95, 0x06, 0x81, 0x00,
-0xC0        // End Collection</pre>
-        </div>
-
-        <!-- Virtual Fire TV Stick Screen Preview -->
-        <div id="cardVirtualTv" class="rounded-2xl tv-screen border border-slate-800 p-5 relative overflow-hidden min-h-[285px] flex flex-col justify-between shadow-xl">
-          
-          <!-- Sleep Mode Overlay -->
-          <div id="tvSleepOverlay" class="hidden absolute inset-0 bg-slate-950/95 z-20 flex flex-col items-center justify-center text-center p-6">
-            <div class="w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 mb-3">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v9m6.364-6.364a9 9 0 11-12.728 0"/></svg>
-            </div>
-            <p class="text-sm font-semibold text-white">Fire TV Stick is in Standby (`KEYCODE_POWER: 26`)</p>
-            <p class="text-xs text-slate-400 mt-1">Press the Power button, Wake button, or Select on the remote to wake the screen.</p>
-          </div>
-
-          <!-- Top TV Status Bar -->
-          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
-            <div class="flex items-center gap-2.5">
-              <span id="tvDeviceBadge" class="px-2 py-0.5 rounded bg-orange-500/20 text-orange-300 border border-orange-500/30 text-[11px] font-semibold">
-                Living Room Fire TV 4K
-              </span>
-              <span id="tvBreadcrumb" class="text-xs text-slate-300 font-medium">Home Launcher</span>
-            </div>
-
-            <!-- Live Volume HUD Bar -->
-            <div class="flex items-center gap-2 bg-slate-900/90 border border-slate-700/80 px-3 py-1 rounded-full">
-              <span id="tvVolIcon" class="text-xs">🔊</span>
-              <div class="w-20 h-2 bg-slate-800 rounded-full overflow-hidden">
-                <div id="tvVolBar" class="h-full bg-sky-400 transition-all duration-150" style="width: 50%;"></div>
-              </div>
-              <span id="tvVolText" class="text-xs mono text-slate-200 w-9 text-right">50%</span>
-            </div>
-          </div>
-
-          <!-- Live On-Screen TV Search Bar -->
-          <div id="tvSearchBox" class="mt-3 px-3 py-2 rounded-xl bg-slate-950/90 border border-slate-800 flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2 text-xs min-w-0">
-              <span class="text-sky-400">🔍</span>
-              <span class="text-slate-400 shrink-0">Fire TV Search Input:</span>
-              <span id="tvSearchText" class="mono text-sky-300 font-medium truncate">Ready for text input...</span>
-            </div>
-            <span class="text-[10px] mono text-slate-400 shrink-0">ADB `%s` / BT HID</span>
-          </div>
-
-          <!-- Navigable 3x2 App Launcher Grid (Default Screen) -->
-          <div id="tvHomeGrid" class="grid grid-cols-3 gap-3 my-3">
-            <!-- Tile 0 -->
-            <div data-tile="0" class="tv-tile p-3 rounded-xl border transition cursor-pointer bg-slate-800/90 border-sky-400 ring-2 ring-sky-400/40">
-              <div class="text-base mb-1">🎬</div>
-              <div class="text-xs font-semibold text-white">Prime Video</div>
-              <div class="text-[10px] text-slate-400">com.amazon.avod</div>
-            </div>
-            <!-- Tile 1 -->
-            <div data-tile="1" class="tv-tile p-3 rounded-xl border transition cursor-pointer bg-slate-900/60 border-slate-800">
-              <div class="text-base mb-1">🍿</div>
-              <div class="text-xs font-semibold text-white">Netflix</div>
-              <div class="text-[10px] text-slate-400">com.netflix.ninja</div>
-            </div>
-            <!-- Tile 2 -->
-            <div data-tile="2" class="tv-tile p-3 rounded-xl border transition cursor-pointer bg-slate-900/60 border-slate-800">
-              <div class="text-base mb-1">▶️</div>
-              <div class="text-xs font-semibold text-white">YouTube</div>
-              <div class="text-[10px] text-slate-400">firetv.youtube</div>
-            </div>
-            <!-- Tile 3 -->
-            <div data-tile="3" class="tv-tile p-3 rounded-xl border transition cursor-pointer bg-slate-900/60 border-slate-800">
-              <div class="text-base mb-1">✨</div>
-              <div class="text-xs font-semibold text-white">Disney+</div>
-              <div class="text-[10px] text-slate-400" id="tileNetworkSub">Wi-Fi Connected</div>
-            </div>
-            <!-- Tile 4 -->
-            <div data-tile="4" class="tv-tile p-3 rounded-xl border transition cursor-pointer bg-slate-900/60 border-slate-800">
-              <div class="text-base mb-1">🎮</div>
-              <div class="text-xs font-semibold text-white">BT Controllers</div>
-              <div class="text-[10px] text-slate-400">HID Profile Ready</div>
-            </div>
-            <!-- Tile 5 -->
-            <div data-tile="5" class="tv-tile p-3 rounded-xl border transition cursor-pointer bg-slate-900/60 border-slate-800">
-              <div class="text-base mb-1">🛠️</div>
-              <div class="text-xs font-semibold text-white">ADB Debugging</div>
-              <div class="text-[10px] text-emerald-400">Enabled (:5555)</div>
-            </div>
-          </div>
-
-          <!-- Active App / Playback Detail View (Shown when Select or Quick-App is clicked) -->
-          <div id="tvAppView" class="hidden my-3 p-4 rounded-xl bg-slate-900/90 border border-slate-700/80 flex flex-col justify-between gap-3">
-            <div class="flex items-center justify-between">
-              <div>
-                <h3 id="tvActiveAppTitle" class="text-sm font-bold text-white">Prime Video — Now Playing</h3>
-                <p id="tvActiveAppDesc" class="text-xs text-slate-400">Use Play/Pause, Rewind, Fast Forward, or press Back/Home to exit.</p>
-              </div>
-              <span id="tvPlaybackBadge" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                ▶ Playing
-              </span>
-            </div>
-            <!-- Media Scrubber Bar -->
-            <div class="flex items-center gap-3">
-              <span id="tvTimeCurrent" class="text-xs mono text-slate-300">12:30</span>
-              <div class="flex-1 h-2 bg-slate-800 rounded-full overflow-hidden">
-                <div id="tvScrubberBar" class="h-full bg-amber-500 transition-all duration-150" style="width: 35%;"></div>
-              </div>
-              <span class="text-xs mono text-slate-400">45:00</span>
-            </div>
-          </div>
-
-          <!-- Context Menu Drawer (Toggled by MENU button) -->
-          <div id="tvMenuDrawer" class="hidden absolute right-4 top-14 w-56 rounded-xl bg-slate-900/95 border border-sky-500/50 p-3 shadow-2xl z-10">
-            <div class="text-xs font-semibold text-sky-300 mb-1.5 flex items-center justify-between">
-              <span>Fire OS Quick Menu</span>
-              <span class="mono text-[10px]">KEY: 82</span>
-            </div>
-            <ul class="text-xs text-slate-300 space-y-1">
-              <li class="px-2 py-1 rounded bg-slate-800/80">• Audio Output: HDMI ARC</li>
-              <li class="px-2 py-1 rounded hover:bg-slate-800/50">• Subtitles &amp; Captions</li>
-              <li class="px-2 py-1 rounded hover:bg-slate-800/50">• System X-Ray Overlay</li>
-            </ul>
-          </div>
-
-          <!-- Bottom TV Status Footer -->
-          <div class="flex items-center justify-between pt-2 border-t border-slate-800/70 text-[11px] text-slate-400">
-            <span id="tvLastEventBanner">Press any remote button, speak a voice command, or run a macro.</span>
-            <span id="tvFocusCoord" class="mono text-slate-300">Focus: Tile [1, 1]</span>
-          </div>
-        </div>
-
-        <!-- Live Command & Packet Inspector -->
-        <div id="cardInspector" class="rounded-2xl bg-slate-900/90 border border-slate-800 p-4 sm:p-5">
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-            <div>
-              <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-300">
-                Live Protocol Output (ADB Command &amp; Bluetooth HID Packet Log)
-              </h3>
-              <p class="text-[11px] text-slate-400">
-                Inspects `input keyevent`, voice intents (`231`), chained macros, `input swipe`, `input text` (`%s`), and 8-byte BT HID reports.
-              </p>
-            </div>
-            <div class="flex items-center gap-2">
-              <button id="btnCopyLastCmd" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-slate-200 transition">
-                📋 Copy Last Command
-              </button>
-              <button id="btnClearLog" type="button" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-slate-400 hover:text-slate-200 transition">
-                Clear
-              </button>
-            </div>
-          </div>
-
-          <!-- Active Command Readout Box -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
-            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
-              <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1">
-                <span>Wi-Fi ADB Command (Port 5555)</span>
-                <a href="https://developer.android.com/reference/android/view/KeyEvent" target="_blank" rel="noopener noreferrer" class="text-sky-400 hover:underline">Android KeyEvent Docs ↗</a>
-              </div>
-              <code id="liveAdbCommand" class="text-xs mono text-sky-300 break-all">adb -s 192.168.1.45:5555 shell input keyevent 19</code>
-            </div>
-            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
-              <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1">
-                <span>Offline Bluetooth HID Report (8-Byte)</span>
-                <a href="https://developer.android.com/reference/android/bluetooth/BluetoothHidDevice" target="_blank" rel="noopener noreferrer" class="text-indigo-400 hover:underline">BluetoothHidDevice API ↗</a>
-              </div>
-              <code id="liveHidPacket" class="text-xs mono text-indigo-300 break-all">Press: [0x00, 0x00, 0x52, 0x00, 0x00, 0x00, 0x00, 0x00]</code>
-            </div>
-          </div>
-
-          <!-- Event History Feed -->
-          <div id="commandLogList" class="max-h-40 overflow-y-auto space-y-1.5 pr-1 text-xs mono">
-            <!-- Populated dynamically -->
-          </div>
+      <!-- Mode Selector -->
+      <div>
+        <label class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">Control Mode</label>
+        <div class="grid grid-cols-2 gap-2">
+          <button id="btnSetModeAdb" type="button" class="p-3 rounded-2xl border text-left transition bg-sky-950/40 border-sky-500/70">
+            <div class="text-xs font-bold text-sky-300">Wi-Fi (ADB)</div>
+            <div class="text-[10px] text-slate-400 mt-0.5">Port 5555 TCP/IP</div>
+          </button>
+          <button id="btnSetModeBt" type="button" class="p-3 rounded-2xl border text-left transition bg-slate-950 border-slate-800 hover:border-slate-700">
+            <div class="text-xs font-bold text-indigo-300">Bluetooth HID</div>
+            <div class="text-[10px] text-slate-400 mt-0.5">Offline Radio Link</div>
+          </button>
         </div>
       </div>
 
-      <!-- ==================== TAB 2: BEGINNER STEP-BY-STEP WALKTHROUGH ==================== -->
-      <div id="viewWalkthrough" class="hidden flex-col gap-4">
-        <div class="rounded-2xl bg-slate-900/90 border border-slate-800 p-5">
-          <h2 class="text-base font-bold text-white mb-1">Complete 4-Step + Bonus Architecture Guide</h2>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            You now have the complete Fire TV Stick controller combining <a href="https://developer.amazon.com/docs/fire-tv/connecting-adb-to-device.html" target="_blank" rel="noopener noreferrer" class="text-sky-400 underline">Wi-Fi ADB (`port 5555`)</a>, offline <a href="https://developer.android.com/reference/android/bluetooth/BluetoothHidDevice" target="_blank" rel="noopener noreferrer" class="text-indigo-400 underline">Bluetooth HID</a>, live text &amp; app shortcuts, swipe touchpad gestures, multi-key macros, and our bonus Voice Command &amp; Phone Haptics engine.
-          </p>
-
-          <!-- Step 4 & Bonus Building Blocks Highlight -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
-            <div class="p-4 rounded-xl bg-amber-950/35 border border-amber-500/40 flex flex-col justify-between">
-              <div>
-                <span class="text-[10px] font-bold text-amber-300 uppercase">Step 4 • Part 10</span>
-                <h3 class="text-sm font-semibold text-white mt-1">Multi-Key Macro Recorder &amp; Chained ADB</h3>
-                <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-                  Records any sequence of remote keys into an array (`["HOME", "RIGHT", "SELECT"]`). When run, it chains the integer codes into a single <a href="https://medium.com/@brainail/cheat-tips-become-as-adbknowledgeable-%E0%AD%A7-%E0%AD%A8-ac4e53804003" target="_blank" rel="noopener noreferrer" class="text-amber-300 underline">ADB multi-key command</a> (`adb shell input keyevent 3 22 23`) or steps through Bluetooth HID reports on a `220ms` timer.
-                </p>
-              </div>
-              <button type="button" data-highlight="macros" class="highlight-trigger mt-3 text-left text-xs text-amber-300 hover:text-amber-200 font-medium">
-                → Highlight Macro Recorder Panel
-              </button>
-            </div>
-
-            <div class="p-4 rounded-xl bg-sky-950/35 border border-sky-500/40 flex flex-col justify-between">
-              <div>
-                <span class="text-[10px] font-bold text-sky-300 uppercase">Bonus • Part 11</span>
-                <h3 class="text-sm font-semibold text-white mt-1">Voice Assistant (`231`) &amp; Phone Haptics</h3>
-                <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-                  Uses the Web Speech API (`SpeechRecognition`) to parse spoken commands like <em>"Open Netflix"</em> or <em>"Search Interstellar"</em>, triggers `KEYCODE_VOICE_ASSIST` (`231`), and vibrates your phone (`navigator.vibrate(25)`) on every press.
-                </p>
-              </div>
-              <button type="button" data-highlight="macros" class="highlight-trigger mt-3 text-left text-xs text-sky-300 hover:text-sky-200 font-medium">
-                → Jump to JSON Export Controls
-              </button>
-            </div>
-          </div>
-
-          <!-- Step 3 Building Blocks Highlight -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
-            <div class="p-4 rounded-xl bg-indigo-950/35 border border-indigo-500/40 flex flex-col justify-between">
-              <div>
-                <span class="text-[10px] font-bold text-indigo-300 uppercase">Step 3 • Part 8</span>
-                <h3 class="text-sm font-semibold text-white mt-1">Swipe Touchpad Vector Math (`Δx`, `Δy`)</h3>
-                <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-                  Tracks pointer start `(x1, y1)` and release `(x2, y2)` on an HTML5 `<canvas>`. If distance `&lt; 12px`, it dispatches `SELECT` (`23`). Otherwise, comparing `|Δx|` vs `|Δy|` resolves `UP`, `DOWN`, `LEFT`, or `RIGHT` and logs `adb shell input swipe` or Bluetooth HID reports.
-                </p>
-              </div>
-              <button id="btnWalkthroughTouchpad" type="button" class="mt-3 text-left text-xs text-indigo-300 hover:text-indigo-200 font-medium">
-                → Activate Swipe Touchpad on the Remote
-              </button>
-            </div>
-
-            <div class="p-4 rounded-xl bg-emerald-950/35 border border-emerald-500/40 flex flex-col justify-between">
-              <div>
-                <span class="text-[10px] font-bold text-emerald-300 uppercase">Step 3 • Part 9</span>
-                <h3 class="text-sm font-semibold text-white mt-1">Bluetooth HID SDP Descriptor &amp; Ping Health</h3>
-                <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-                  Passes a binary HID Report Descriptor (`0x05, 0x01...` for Keyboard Page `0x07` or Consumer Page `0x0C`) into <a href="https://developer.android.com/reference/android/bluetooth/BluetoothHidDeviceAppSdpSettings" target="_blank" rel="noopener noreferrer" class="text-emerald-300 underline">BluetoothHidDeviceAppSdpSettings ↗</a> so Fire TV recognizes your phone as a hardware remote.
-                </p>
-              </div>
-              <button type="button" data-highlight="descriptor" class="highlight-trigger mt-3 text-left text-xs text-emerald-300 hover:text-emerald-200 font-medium">
-                → Highlight Bluetooth HID Descriptor Panel
-              </button>
-            </div>
-          </div>
-
-          <!-- Step 2 Building Blocks Highlight -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
-            <div class="p-4 rounded-xl bg-sky-950/30 border border-sky-500/40 flex flex-col justify-between">
-              <div>
-                <span class="text-[10px] font-bold text-sky-400 uppercase">Step 2 • Part 5</span>
-                <h3 class="text-sm font-semibold text-white mt-1">Text Input Formatter (`%s` &amp; HID)</h3>
-                <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-                  Replaces spaces with `%s` for <a href="https://gist.github.com/lopesivan/e6f434595253b4a275fa1dd411538dc4" target="_blank" rel="noopener noreferrer" class="text-sky-400 underline">ADB `input text` ↗</a> or maps letters to USB HID keycodes (`0x04`–`0x1D`) when offline.
-                </p>
-              </div>
-              <button type="button" data-highlight="keyboard" class="highlight-trigger mt-3 text-left text-xs text-sky-400 hover:text-sky-300 font-medium">
-                → Highlight Live Text Keyboard
-              </button>
-            </div>
-
-            <div class="p-4 rounded-xl bg-emerald-950/30 border border-emerald-500/40 flex flex-col justify-between">
-              <div>
-                <span class="text-[10px] font-bold text-emerald-400 uppercase">Step 2 • Part 6</span>
-                <h3 class="text-sm font-semibold text-white mt-1">One-Tap App Package Launcher</h3>
-                <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-                  Invokes `adb shell monkey -p &lt;package&gt; -c android.intent.category.LAUNCHER 1` to open Prime Video or Netflix directly.
-                </p>
-              </div>
-              <button type="button" data-highlight="inspector" class="highlight-trigger mt-3 text-left text-xs text-emerald-400 hover:text-emerald-300 font-medium">
-                → Jump to Live Protocol Inspector
-              </button>
-            </div>
-
-            <div class="p-4 rounded-xl bg-indigo-950/30 border border-indigo-500/40 flex flex-col justify-between">
-              <div>
-                <span class="text-[10px] font-bold text-indigo-400 uppercase">Step 2 • Part 7</span>
-                <h3 class="text-sm font-semibold text-white mt-1">Saved Device Profiles</h3>
-                <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-                  Stores room names, Fire TV IP addresses, and preferred mode (`ADB` vs `BLUETOOTH`) in browser `localStorage`.
-                </p>
-              </div>
-              <button type="button" data-highlight="transport" class="highlight-trigger mt-3 text-left text-xs text-indigo-400 hover:text-indigo-300 font-medium">
-                → Inspect the Dual Transport Switcher
-              </button>
-            </div>
-          </div>
-
-          <!-- Step 1 Core Building Blocks Breakdown -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col justify-between">
-              <div>
-                <span class="text-[11px] font-semibold text-sky-400 uppercase">Step 1 • Part 1 &amp; 2</span>
-                <h3 class="text-sm font-semibold text-white mt-1">Tactile Remote &amp; Keycode Dictionary</h3>
-                <p class="text-xs text-slate-400 mt-1 leading-relaxed">
-                  Every button triggers `sendRemoteAction(action)`, looking up both the <a href="https://developer.android.com/reference/android/view/KeyEvent" target="_blank" rel="noopener noreferrer" class="text-sky-400 underline">Android KeyEvent constant</a> and the <a href="https://gist.github.com/MightyPork/6da26e382a7ad91b5496ee55fdc73db2" target="_blank" rel="noopener noreferrer" class="text-indigo-400 underline">USB/Bluetooth HID scan code</a>.
-                </p>
-              </div>
-              <button type="button" data-highlight="remote" class="highlight-trigger mt-3 text-left text-xs text-sky-400 hover:text-sky-300 font-medium">
-                → Pulse the Remote UI on the left
-              </button>
-            </div>
-
-            <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex flex-col justify-between">
-              <div>
-                <span class="text-[11px] font-semibold text-amber-400 uppercase">Step 1 • Part 3 &amp; 4</span>
-                <h3 class="text-sm font-semibold text-white mt-1">Dual Transport &amp; Virtual TV Sandbox</h3>
-                <p class="text-xs text-slate-400 mt-1 leading-relaxed">
-                  Automatically falls back from Wi-Fi ADB to 8-byte Bluetooth HID reports when Wi-Fi drops, while updating the interactive Virtual Fire TV screen in real time.
-                </p>
-              </div>
-              <button type="button" data-highlight="tv" class="highlight-trigger mt-3 text-left text-xs text-amber-400 hover:text-amber-300 font-medium">
-                → Test on the Virtual Fire TV Screen
-              </button>
-            </div>
-          </div>
-
-          <!-- Complete Reference Table of Grounded Keycodes -->
-          <div class="mt-5 pt-4 border-t border-slate-800">
-            <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
-              Complete Grounded Keycode Reference Table
-            </h3>
-            <div class="overflow-x-auto">
-              <table class="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr class="border-b border-slate-800 text-slate-400">
-                    <th class="py-2 pr-3">Button</th>
-                    <th class="py-2 px-3">Android KeyEvent Constant</th>
-                    <th class="py-2 px-3 text-right">ADB Code</th>
-                    <th class="py-2 pl-3 text-right">BT HID Usage</th>
-                  </tr>
-                </thead>
-                <tbody id="keycodeTableBody" class="divide-y divide-slate-800/60 mono text-[11px]">
-                  <!-- Populated dynamically from KEY_MAP -->
-                </tbody>
-              </table>
-            </div>
-          </div>
+      <!-- Toggles -->
+      <div class="space-y-2 pt-2 border-t border-slate-800 text-xs">
+        <div class="flex items-center justify-between py-1">
+          <span class="text-slate-300">Haptic Vibration</span>
+          <button id="btnToggleHapticsModal" type="button" class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold text-[11px]">Enabled</button>
+        </div>
+        <div class="flex items-center justify-between py-1">
+          <span class="text-slate-300">Click Audio Tones</span>
+          <button id="btnToggleAudioModal" type="button" class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold text-[11px]">Enabled</button>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- ==================== TAB 3: REAL FIRE TV SETUP & PYTHON BRIDGE ==================== -->
-      <div id="viewBridge" class="hidden flex-col gap-4">
-        <div class="rounded-2xl bg-slate-900/90 border border-slate-800 p-5">
-          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-            <div>
-              <h2 class="text-base font-bold text-white">Run on Your Phone &amp; Fire TV Stick (All-in-One Server)</h2>
-              <p class="text-xs text-slate-400">
-                `firetv_bridge.py` now hosts `firetv_remote.html` over `0.0.0.0:8765` so you can open `http://&lt;your-pc-ip&gt;:8765` on your phone browser and control your physical Fire TV Stick!
-              </p>
-            </div>
-            <button id="btnCopyBridgeScript" type="button" class="px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-medium transition">
-              📋 Copy `firetv_bridge.py`
-            </button>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 text-xs">
-            <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
-              <div class="font-semibold text-sky-300 mb-1">1. Run on Phone via Wi-Fi ADB (2 Minutes)</div>
-              <ol class="list-decimal list-inside space-y-1 text-slate-300 text-[11px]">
-                <li>Enable <strong>Settings &gt; My Fire TV &gt; Developer Options &gt; ADB Debugging</strong> (<a href="https://developer.amazon.com/docs/fire-tv/connecting-adb-to-device.html" target="_blank" rel="noopener noreferrer" class="text-sky-400 underline">Amazon ADB Guide ↗</a>).</li>
-                <li>Download `firecontrol_complete_app.zip` and run: <code class="text-emerald-300">python3 firetv_bridge.py &lt;FIRE_TV_IP&gt;:5555</code>.</li>
-                <li>Open the printed `http://&lt;LAN_IP&gt;:8765` URL on your phone browser (or in Android Termux) and tap <strong>Add to Home Screen</strong>!</li>
-              </ol>
-            </div>
-            <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
-              <div class="font-semibold text-indigo-300 mb-1">2. Run Offline via Bluetooth HID (No Wi-Fi)</div>
-              <ol class="list-decimal list-inside space-y-1 text-slate-300 text-[11px]">
-                <li>On Fire TV, open <strong>Settings &gt; Controllers &amp; Bluetooth Devices &gt; Other Bluetooth Devices</strong>.</li>
-                <li>Select <strong>Add Bluetooth Devices</strong> to put Fire TV into pairing mode.</li>
-                <li>Use `AndroidBluetoothHidHelper.kt` (included in the zip) with Android's <a href="https://developer.android.com/reference/android/bluetooth/BluetoothHidDevice" target="_blank" rel="noopener noreferrer" class="text-indigo-400 underline">BluetoothHidDevice API ↗</a> to pair your phone directly as a Bluetooth HID remote!</li>
-              </ol>
-            </div>
-          </div>
-
-          <pre id="pythonBridgeCode" class="p-4 rounded-xl bg-slate-950 border border-slate-800 text-[11px] mono text-slate-200 overflow-x-auto leading-relaxed"># firetv_bridge.py (Complete Phone + Fire TV Server)
-# Hosts firetv_remote.html for your phone AND forwards ADB commands to Fire TV!
-import os, socket, subprocess, sys, urllib.parse
-from http.server import BaseHTTPRequestHandler, HTTPServer
-
-FIRETV_TARGET = sys.argv[1] if len(sys.argv) &gt; 1 else "192.168.1.45:5555"
-subprocess.run(["adb", "connect", FIRETV_TARGET])
-
-class BridgeHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        if self.path in ("/", "/index.html", "/firetv_remote.html"):
-            self.send_response(200)
-            self.send_header("Content-Type", "text/html; charset=utf-8")
-            self.end_headers()
-            with open(os.path.join(os.path.dirname(__file__), "firetv_remote.html"), "rb") as f:
-                self.wfile.write(f.read())
-            return
-        if self.path.startswith("/keyevent/"):
-            code = self.path.split("/keyevent/")[1]
-            subprocess.run(["adb", "-s", FIRETV_TARGET, "shell", "input", "keyevent", code])
-        elif self.path.startswith("/macro/"):
-            codes = self.path.split("/macro/")[1].split(",")
-            subprocess.run(["adb", "-s", FIRETV_TARGET, "shell", "input", "keyevent", *codes])
-        elif self.path.startswith("/swipe/"):
-            coords = self.path.split("/swipe/")[1].split(",")
-            if len(coords) == 4:
-                subprocess.run(["adb", "-s", FIRETV_TARGET, "shell", "input", "swipe", *coords, "150"])
-        elif self.path.startswith("/text/"):
-            raw = urllib.parse.unquote(self.path.split("/text/")[1]).replace(" ", "%s")
-            subprocess.run(["adb", "-s", FIRETV_TARGET, "shell", "input", "text", raw])
-        elif self.path.startswith("/launch/"):
-            pkg = self.path.split("/launch/")[1]
-            subprocess.run(["adb", "-s", FIRETV_TARGET, "shell", "monkey", "-p", pkg, "-c", "android.intent.category.LAUNCHER", "1"])
-        self.send_response(200)
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.end_headers()
-        self.wfile.write(b"OK")
-
-lan_ip = socket.gethostbyname(socket.gethostname())
-print(f"Open on your Phone Browser: http://{lan_ip}:8765  (Target Fire TV: {FIRETV_TARGET})")
-HTTPServer(("0.0.0.0", 8765), BridgeHandler).serve_forever()</pre>
-        </div>
-      </div>
-
-      <!-- Toast Feedback Banner -->
-      <div id="toastBanner" class="hidden fixed bottom-4 right-4 z-40 px-4 py-2.5 rounded-xl bg-slate-800 border border-sky-500/50 text-xs text-white shadow-xl">
-        Copied to clipboard!
-      </div>
-
-    </section>
-  </main>
+  <!-- Toast Notice -->
+  <div id="toastBanner" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-slate-800 border border-sky-500/40 text-xs font-medium text-white shadow-2xl z-50">
+    Notice
+  </div>
 
   <script>
     // ============================================================================
-    // 1. GROUNDED KEYCODE DICTIONARY (Android KeyEvent + USB/Bluetooth HID Usage)
+    // 1. KEYCODES & CONSTANTS
     // ============================================================================
     const KEY_MAP = {
-      UP:           { label: "D-Pad Up",       adbName: "KEYCODE_DPAD_UP",          adbCode: 19,  hidHex: "0x52", hidReport: "[0x00, 0x00, 0x52, 0x00, 0x00, 0x00, 0x00, 0x00]" },
-      DOWN:         { label: "D-Pad Down",     adbName: "KEYCODE_DPAD_DOWN",        adbCode: 20,  hidHex: "0x51", hidReport: "[0x00, 0x00, 0x51, 0x00, 0x00, 0x00, 0x00, 0x00]" },
-      LEFT:         { label: "D-Pad Left",     adbName: "KEYCODE_DPAD_LEFT",        adbCode: 21,  hidHex: "0x50", hidReport: "[0x00, 0x00, 0x50, 0x00, 0x00, 0x00, 0x00, 0x00]" },
-      RIGHT:        { label: "D-Pad Right",    adbName: "KEYCODE_DPAD_RIGHT",       adbCode: 22,  hidHex: "0x4F", hidReport: "[0x00, 0x00, 0x4F, 0x00, 0x00, 0x00, 0x00, 0x00]" },
-      SELECT:       { label: "Select / OK",    adbName: "KEYCODE_DPAD_CENTER",      adbCode: 23,  hidHex: "0x28", hidReport: "[0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00]" },
-      VOL_UP:       { label: "Volume Up",      adbName: "KEYCODE_VOLUME_UP",        adbCode: 24,  hidHex: "0x80", hidReport: "[0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00]" },
-      VOL_DOWN:     { label: "Volume Down",    adbName: "KEYCODE_VOLUME_DOWN",      adbCode: 25,  hidHex: "0x81", hidReport: "[0x00, 0x00, 0x81, 0x00, 0x00, 0x00, 0x00, 0x00]" },
-      MUTE:         { label: "Volume Mute",    adbName: "KEYCODE_VOLUME_MUTE",      adbCode: 164, hidHex: "0x7F", hidReport: "[0x00, 0x00, 0x7F, 0x00, 0x00, 0x00, 0x00, 0x00]" },
-      HOME:         { label: "Home",           adbName: "KEYCODE_HOME",             adbCode: 3,   hidHex: "0x4A", hidReport: "[0x00, 0x00, 0x4A, 0x00, 0x00, 0x00, 0x00, 0x00]" },
-      BACK:         { label: "Back",           adbName: "KEYCODE_BACK",             adbCode: 4,   hidHex: "0x29", hidReport: "[0x00, 0x00, 0x29, 0x00, 0x00, 0x00, 0x00, 0x00]" },
-      MENU:         { label: "Context Menu",   adbName: "KEYCODE_MENU",             adbCode: 82,  hidHex: "0x65", hidReport: "[0x00, 0x00, 0x65, 0x00, 0x00, 0x00, 0x00, 0x00]" },
-      SEARCH:       { label: "TV Search",      adbName: "KEYCODE_SEARCH",           adbCode: 84,  hidHex: "0x45", hidReport: "[0x00, 0x00, 0x45, 0x00, 0x00, 0x00, 0x00, 0x00]" },
-      VOICE_ASSIST: { label: "Voice Assistant",adbName: "KEYCODE_VOICE_ASSIST",     adbCode: 231, hidHex: "0xCF", hidReport: "Consumer Page (0x0C) Usage: 0xCF (Voice Command)" },
-      WAKEUP:       { label: "Wake Up TV",     adbName: "KEYCODE_WAKEUP",           adbCode: 224, hidHex: "0x66", hidReport: "[0x00, 0x00, 0x66, 0x00, 0x00, 0x00, 0x00, 0x00]" },
-      BACKSPACE:    { label: "Backspace / Del",adbName: "KEYCODE_DEL",              adbCode: 67,  hidHex: "0x2A", hidReport: "[0x00, 0x00, 0x2A, 0x00, 0x00, 0x00, 0x00, 0x00]" },
-      PLAY_PAUSE:   { label: "Play / Pause",   adbName: "KEYCODE_MEDIA_PLAY_PAUSE", adbCode: 85,  hidHex: "0xCD", hidReport: "Consumer Page (0x0C) Usage: 0xCD" },
-      REWIND:       { label: "Rewind",         adbName: "KEYCODE_MEDIA_REWIND",     adbCode: 89,  hidHex: "0xB4", hidReport: "Consumer Page (0x0C) Usage: 0xB4" },
-      FAST_FORWARD: { label: "Fast Forward",   adbName: "KEYCODE_MEDIA_FAST_FORWARD", adbCode: 90, hidHex: "0xB3", hidReport: "Consumer Page (0x0C) Usage: 0xB3" },
-      POWER:        { label: "Power / Standby",adbName: "KEYCODE_POWER",            adbCode: 26,  hidHex: "0x66", hidReport: "[0x00, 0x00, 0x66, 0x00, 0x00, 0x00, 0x00, 0x00]" }
+      UP:           { adb: 19, hid: 0x52 },
+      DOWN:         { adb: 20, hid: 0x51 },
+      LEFT:         { adb: 21, hid: 0x50 },
+      RIGHT:        { adb: 22, hid: 0x4F },
+      SELECT:       { adb: 23, hid: 0x28 },
+      BACK:         { adb: 4,  hid: 0x29 },
+      HOME:         { adb: 3,  hid: 0x4A },
+      MENU:         { adb: 82, hid: 0x65 },
+      SEARCH:       { adb: 84, hid: 0x45 },
+      VOICE_ASSIST: { adb: 231,hid: 0xCF },
+      POWER:        { adb: 26, hid: 0x66 },
+      VOL_UP:       { adb: 24, hid: 0x80 },
+      VOL_DOWN:     { adb: 25, hid: 0x81 },
+      MUTE:         { adb: 164,hid: 0x7F },
+      PLAY_PAUSE:   { adb: 85, hid: 0xCD },
+      REWIND:       { adb: 89, hid: 0xB4 },
+      FAST_FORWARD: { adb: 90, hid: 0xB3 }
     };
-
-    const HID_DESCRIPTORS = {
-      KEYBOARD: `0x05, 0x01, // Usage Page (Generic Desktop Ctrls)
-0x09, 0x06, // Usage (Keyboard) — Works with Fire TV Stick over Bluetooth!
-0xA1, 0x01, // Collection (Application)
-0x05, 0x07, //   Usage Page (Kbrd/Keypad) -> Arrow Up (0x52), Down (0x51), Left (0x50), Right (0x4F)
-0x19, 0x00, 0x29, 0xFF, 0x15, 0x00, 0x25, 0xFF, 0x75, 0x08, 0x95, 0x06, 0x81, 0x00,
-0xC0        // End Collection`,
-      CONSUMER: `0x05, 0x0C, // Usage Page (Consumer Devices — Media & Volume)
-0x09, 0x01, // Usage (Consumer Control)
-0xA1, 0x01, // Collection (Application)
-0x15, 0x00, 0x26, 0xFF, 0x03, 0x19, 0x00, 0x2A, 0xFF, 0x03,
-0x75, 0x10, 0x95, 0x01, 0x81, 0x00, // Play/Pause (0xCD), Rewind (0xB4), FastFwd (0xB3)
-0xC0        // End Collection`
-    };
-
-    const TILES = [
-      { title: "Prime Video",    pkg: "com.amazon.avod",           desc: "Streaming 4K HDR Movie — Use Play/Pause, Rewind, or Fast Forward." },
-      { title: "Netflix",        pkg: "com.netflix.ninja",         desc: "Netflix Original Series — Use Volume Up/Down or Back to return." },
-      { title: "YouTube",        pkg: "com.amazon.firetv.youtube", desc: "4K Creator Channels — Type in the Step 2 keyboard to search videos." },
-      { title: "Disney+",        pkg: "com.disney.disneyplus",     desc: "Dolby Vision Stream — Inspecting local Wi-Fi and Bluetooth status." },
-      { title: "BT Controllers", pkg: "com.amazon.tv.settings.v2", desc: "Bluetooth HID Host Service — Ready for offline remote & keyboard input." },
-      { title: "ADB Debugging",  pkg: "com.amazon.tv.settings.v2", desc: "ADB Daemon active: accepting `input keyevent`, `input text`, and `monkey`." }
-    ];
 
     const DEFAULT_PROFILES = [
-      { id: "living",  name: "Living Room Fire TV 4K", ip: "192.168.1.45:5555", transport: "ADB",       wifiOnline: true },
-      { id: "bedroom", name: "Bedroom Fire TV Lite",   ip: "192.168.1.82:5555", transport: "ADB",       wifiOnline: true },
-      { id: "travel",  name: "Travel Stick (No Wi-Fi)",ip: "BT-HID-DIRECT",     transport: "BLUETOOTH", wifiOnline: false }
-    ];
-
-    const DEFAULT_MACROS = [
-      { id: "night_vol",   name: "🌙 Night Volume (-15%)",   steps: ["VOL_DOWN", "VOL_DOWN", "VOL_DOWN"] },
-      { id: "reset_home",  name: "🧹 Exit Menus & Go Home",  steps: ["BACK", "BACK", "HOME"] },
-      { id: "cinema_jump", name: "🍿 Home -> Open Netflix",  steps: ["HOME", "RIGHT", "SELECT"] }
+      { id: "living", name: "Living Room Fire TV", ip: "192.168.1.45:5555" },
+      { id: "bedroom", name: "Bedroom Fire TV", ip: "192.168.1.82:5555" }
     ];
 
     // ============================================================================
-    // 2. APPLICATION STATE
+    // 2. STATE
     // ============================================================================
     const state = {
-      transport: "ADB",        // "ADB" or "BLUETOOTH"
-      wifiOnline: true,        // Simulated Wi-Fi status
-      soundEnabled: true,
-      hapticsEnabled: true,    // Bonus: Phone haptic vibration
-      touchpadMode: false,     // Step 3: false = Classic D-Pad, true = Swipe Touchpad
-      activeDescriptor: "KEYBOARD", // "KEYBOARD" or "CONSUMER"
-      pingMs: 12,
-      recordingMacro: false,   // Step 4: Macro recording state
-      recordedBuffer: [],      // Step 4: Keys pressed during recording
-      macros: [...DEFAULT_MACROS],
-      tvAwake: true,
-      focusedTile: 0,          // 0..5 in 3x2 grid
-      openedTile: null,        // null when on Home Launcher, or 0..5 when inside an app
-      menuOpen: false,
-      isPlaying: true,
-      progressPct: 35,
-      volume: 50,
-      muted: false,
-      tvSearchQuery: "Stranger Things",
+      mode: "ADB", // "ADB" or "BLUETOOTH"
       activeProfileId: "living",
       profiles: [...DEFAULT_PROFILES],
-      lastCommandText: "adb -s 192.168.1.45:5555 shell input keyevent 19",
-      logs: []
+      touchpadMode: false,
+      haptics: true,
+      audio: true
     };
 
-    function getBridgeHost() {
-      const inputEl = document.getElementById("bridgeHostInput");
-      if (inputEl && inputEl.value.trim()) {
-        return inputEl.value.trim().replace(/^https?:\/\//, "").replace(/\/+$/, "");
-      }
-      return "127.0.0.1:8765";
+    function loadPersistedState() {
+      try {
+        const raw = localStorage.getItem("firecontrol_state_v1");
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed.profiles) state.profiles = parsed.profiles;
+          if (parsed.activeProfileId) state.activeProfileId = parsed.activeProfileId;
+          if (parsed.mode) state.mode = parsed.mode;
+        }
+      } catch (e) {}
     }
 
-    function triggerHaptic(ms = 22) {
-      if (!state.hapticsEnabled) return;
+    function saveState() {
+      try {
+        localStorage.setItem("firecontrol_state_v1", JSON.stringify({
+          profiles: state.profiles,
+          activeProfileId: state.activeProfileId,
+          mode: state.mode
+        }));
+      } catch (e) {}
+    }
+
+    function getActiveProfile() {
+      return state.profiles.find(p => p.id === state.activeProfileId) || state.profiles[0];
+    }
+
+    // ============================================================================
+    // 3. AUDIO & HAPTICS
+    // ============================================================================
+    let audioCtx = null;
+    function playClick() {
+      if (!state.audio) return;
+      try {
+        if (!audioCtx) {
+          const Cls = window.AudioContext || window.webkitAudioContext;
+          if (Cls) audioCtx = new Cls();
+        }
+        if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.frequency.setValueAtTime(540, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.045);
+      } catch (e) {}
+    }
+
+    function haptic(ms = 20) {
+      if (!state.haptics) return;
       try {
         if (navigator.vibrate) navigator.vibrate(ms);
       } catch (e) {}
     }
 
-    function loadSavedProfiles() {
-      try {
-        const raw = localStorage.getItem("firecontrol_profiles_v2");
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            state.profiles = parsed;
-          }
-        }
-        const rawMacros = localStorage.getItem("firecontrol_macros_v4");
-        if (rawMacros) {
-          const parsedM = JSON.parse(rawMacros);
-          if (Array.isArray(parsedM) && parsedM.length > 0) {
-            state.macros = parsedM;
-          }
-        }
-      } catch (e) {}
-    }
-
-    function persistProfiles() {
-      try {
-        localStorage.setItem("firecontrol_profiles_v2", JSON.stringify(state.profiles));
-        localStorage.setItem("firecontrol_macros_v4", JSON.stringify(state.macros));
-      } catch (e) {}
+    function showToast(msg) {
+      const el = document.getElementById("toastBanner");
+      el.textContent = msg;
+      el.classList.remove("hidden");
+      setTimeout(() => el.classList.add("hidden"), 2000);
     }
 
     // ============================================================================
-    // 3. WEB AUDIO SYNTHESIZER (Tactile Remote Clicks)
+    // 4. ACTION DISPATCHER (Native APK bridge + fallback)
     // ============================================================================
-    let audioCtx = null;
-    function playClickTone(freq = 520) {
-      if (!state.soundEnabled) return;
-      try {
-        if (!audioCtx) {
-          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-          if (AudioContextClass) audioCtx = new AudioContextClass();
-        }
-        if (!audioCtx) return;
-        if (audioCtx.state === "suspended") audioCtx.resume();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = "triangle";
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.045);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.05);
-      } catch (err) {}
-    }
-
-    // ============================================================================
-    // 4. CORE REMOTE ACTION, TOUCHPAD SWIPE, VOICE, TEXT & APP LAUNCH DISPATCHERS
-    // ============================================================================
-    function sendRemoteAction(actionKey, swipeMeta = null) {
+    function sendKey(actionKey) {
       const mapping = KEY_MAP[actionKey];
       if (!mapping) return;
 
-      if (state.recordingMacro && state.recordedBuffer.length < 8) {
-        state.recordedBuffer.push(actionKey);
+      playClick();
+      haptic(actionKey === "SELECT" ? 35 : 18);
+
+      const profile = getActiveProfile();
+      const host = profile.ip;
+
+      // Call Native Android Kotlin Bridge if inside compiled APK
+      if (window.FireControlNative) {
+        try {
+          if (state.mode === "ADB") {
+            window.FireControlNative.sendAdbKeyEvent(host, mapping.adb);
+          } else {
+            window.FireControlNative.sendBluetoothHidKey(mapping.hid);
+          }
+        } catch (e) {}
+      } else {
+        // Fallback for browser testing
+        fetch(`http://127.0.0.1:8765/keyevent/${mapping.adb}`, { mode: "no-cors" }).catch(() => {});
       }
+    }
 
-      triggerHaptic(22);
-      playClickTone(actionKey === "SELECT" ? 680 : 480);
-      flashRemoteLed();
+    function sendSwipe(x1, y1, x2, y2, resolvedDir) {
+      const mapping = KEY_MAP[resolvedDir];
+      if (!mapping) return;
 
-      if (!state.wifiOnline && state.transport === "ADB") {
-        state.transport = "BLUETOOTH";
-        document.getElementById("autoFallbackNotice").classList.remove("hidden");
-      }
+      playClick();
+      haptic(25);
 
-      const ipTarget = (document.getElementById("adbIpInput").value || "192.168.1.45:5555").trim();
-      let adbCmd = `adb -s ${ipTarget} shell input keyevent ${mapping.adbCode}`;
-      if (swipeMeta) {
-        adbCmd = `adb -s ${ipTarget} shell input swipe ${swipeMeta.x1} ${swipeMeta.y1} ${swipeMeta.x2} ${swipeMeta.y2} 150  # -> ${mapping.adbName}`;
-      }
-      const btCmd = `Press: ${mapping.hidReport} -> Release: [0x00 x 8]`;
-
-      state.lastCommandText = state.transport === "ADB" ? adbCmd : btCmd;
-
-      document.getElementById("liveAdbCommand").textContent = swipeMeta ? adbCmd : `${adbCmd}  # ${mapping.adbName}`;
-      document.getElementById("liveHidPacket").textContent = btCmd;
+      const profile = getActiveProfile();
+      const host = profile.ip;
 
       if (window.FireControlNative) {
         try {
-          if (state.transport === "ADB" && state.wifiOnline) {
-            if (swipeMeta) {
-              window.FireControlNative.sendAdbSwipe(ipTarget, swipeMeta.x1, swipeMeta.y1, swipeMeta.x2, swipeMeta.y2);
-            } else {
-              window.FireControlNative.sendAdbKeyEvent(ipTarget, mapping.adbCode);
-            }
+          if (state.mode === "ADB") {
+            window.FireControlNative.sendAdbSwipe(host, x1, y1, x2, y2);
           } else {
-            window.FireControlNative.sendBluetoothHidKey( parseInt(mapping.hidHex, 16) || 0x28 );
+            window.FireControlNative.sendBluetoothHidKey(mapping.hid);
           }
         } catch (e) {}
-      } else if (state.transport === "ADB" && state.wifiOnline) {
-        const host = getBridgeHost();
-        if (swipeMeta) {
-          fetch(`http://${host}/swipe/${swipeMeta.x1},${swipeMeta.y1},${swipeMeta.x2},${swipeMeta.y2}`, { mode: "no-cors" }).catch(() => {});
-        } else {
-          fetch(`http://${host}/keyevent/${mapping.adbCode}`, { mode: "no-cors" }).catch(() => {});
-        }
-      }
-
-      updateVirtualTvState(actionKey, mapping);
-
-      const labelPrefix = swipeMeta ? `Swipe ${mapping.label}` : mapping.label;
-      pushLogEntry(labelPrefix, adbCmd, `BT_HID(${mapping.hidHex})`);
-      renderAll();
-    }
-
-    // BONUS FEATURE: Parse & Execute Natural Language Voice Commands
-    function processVoiceCommand(rawPhrase) {
-      const phrase = (rawPhrase || "").trim();
-      if (!phrase) return;
-      document.getElementById("voiceTranscriptReadout").textContent = `🎙️ "${phrase}"`;
-      const lower = phrase.toLowerCase();
-
-      if (lower.includes("netflix")) {
-        launchFireTvApp("com.netflix.ninja", "Netflix");
-      } else if (lower.includes("prime")) {
-        launchFireTvApp("com.amazon.avod", "Prime Video");
-      } else if (lower.includes("youtube")) {
-        launchFireTvApp("com.amazon.firetv.youtube", "YouTube");
-      } else if (lower.includes("disney")) {
-        launchFireTvApp("com.disney.disneyplus", "Disney+");
-      } else if (lower.startsWith("search ")) {
-        const q = phrase.slice(7).trim();
-        document.getElementById("remoteTextInput").value = q;
-        sendTextToFireTv(q);
-      } else if (lower.includes("volume up") || lower.includes("louder")) {
-        sendRemoteAction("VOL_UP");
-      } else if (lower.includes("volume down") || lower.includes("quieter")) {
-        sendRemoteAction("VOL_DOWN");
-      } else if (lower.includes("mute")) {
-        sendRemoteAction("MUTE");
-      } else if (lower.includes("home")) {
-        sendRemoteAction("HOME");
-      } else if (lower.includes("wake")) {
-        sendRemoteAction("WAKEUP");
       } else {
-        document.getElementById("remoteTextInput").value = phrase;
-        sendTextToFireTv(phrase);
+        fetch(`http://127.0.0.1:8765/swipe/${x1},${y1},${x2},${y2}`, { mode: "no-cors" }).catch(() => {});
       }
-      showToast(`Voice executed: "${phrase}"`);
     }
 
-    // Step 4: Execute Multi-Key Macro Routine
-    let activeMacroTimer = null;
-    function executeMacroSequence(macroObj) {
-      if (!macroObj || !Array.isArray(macroObj.steps) || macroObj.steps.length === 0) return;
-      if (activeMacroTimer) clearInterval(activeMacroTimer);
+    function sendText(text) {
+      const clean = (text || "").trim();
+      if (!clean) return;
+      playClick();
+      haptic(25);
 
-      const ipTarget = (document.getElementById("adbIpInput").value || "192.168.1.45:5555").trim();
-      const codes = macroObj.steps.map(k => KEY_MAP[k] ? KEY_MAP[k].adbCode : 23);
-      const hidSeq = macroObj.steps.map(k => KEY_MAP[k] ? KEY_MAP[k].hidHex : "0x28");
+      const profile = getActiveProfile();
+      const host = profile.ip;
 
-      const chainedAdb = `adb -s ${ipTarget} shell input keyevent ${codes.join(" ")}`;
-      const chainedBt = `BT HID Macro (${macroObj.steps.length} keys): [${hidSeq.join(" -> ")}]`;
-
-      state.lastCommandText = state.transport === "ADB" ? chainedAdb : chainedBt;
-      document.getElementById("liveAdbCommand").textContent = chainedAdb;
-      document.getElementById("liveHidPacket").textContent = chainedBt;
-
-      if (state.transport === "ADB" && state.wifiOnline) {
-        fetch(`http://${getBridgeHost()}/macro/${codes.join(",")}`, { mode: "no-cors" }).catch(() => {});
+      if (window.FireControlNative) {
+        try {
+          window.FireControlNative.sendAdbText(host, clean);
+        } catch (e) {}
+      } else {
+        fetch(`http://127.0.0.1:8765/text/${encodeURIComponent(clean)}`, { mode: "no-cors" }).catch(() => {});
       }
-
-      pushLogEntry(`Macro: ${macroObj.name}`, chainedAdb, chainedBt);
-      showToast(`Running Macro: ${macroObj.name} (${macroObj.steps.join(" → ")})`);
-
-      let stepIdx = 0;
-      activeMacroTimer = setInterval(() => {
-        if (stepIdx >= macroObj.steps.length) {
-          clearInterval(activeMacroTimer);
-          activeMacroTimer = null;
-          return;
-        }
-        const key = macroObj.steps[stepIdx];
-        const mapping = KEY_MAP[key];
-        if (mapping) {
-          triggerHaptic(15);
-          playClickTone(540 + stepIdx * 55);
-          flashRemoteLed();
-          updateVirtualTvState(key, mapping);
-          renderAll();
-        }
-        stepIdx++;
-      }, 220);
+      showToast(`Sent: "${clean}"`);
     }
 
-    function sendTextToFireTv(rawText) {
-      const clean = (rawText || "").trim();
-      if (!clean) {
-        showToast("Enter some text to send to Fire TV!");
-        return;
+    function launchApp(pkg, name) {
+      playClick();
+      haptic(40);
+      const profile = getActiveProfile();
+      const host = profile.ip;
+
+      if (window.FireControlNative) {
+        try {
+          window.FireControlNative.launchAdbPackage(host, pkg);
+        } catch (e) {}
+      } else {
+        fetch(`http://127.0.0.1:8765/launch/${encodeURIComponent(pkg)}`, { mode: "no-cors" }).catch(() => {});
       }
-
-      triggerHaptic(25);
-      playClickTone(610);
-      flashRemoteLed();
-
-      if (!state.wifiOnline && state.transport === "ADB") {
-        state.transport = "BLUETOOTH";
-        document.getElementById("autoFallbackNotice").classList.remove("hidden");
-      }
-
-      const ipTarget = (document.getElementById("adbIpInput").value || "192.168.1.45:5555").trim();
-      const adbEscaped = clean.replace(/ /g, "%s");
-      const adbCmd = `adb -s ${ipTarget} shell input text "${adbEscaped}"`;
-
-      const firstChar = clean.charCodeAt(0);
-      let firstHidHex = "0x2C";
-      if (firstChar >= 65 && firstChar <= 90) {
-        firstHidHex = "0x" + (firstChar - 65 + 4).toString(16).toUpperCase().padStart(2, "0");
-      } else if (firstChar >= 97 && firstChar <= 122) {
-        firstHidHex = "0x" + (firstChar - 97 + 4).toString(16).toUpperCase().padStart(2, "0");
-      }
-      const btCmd = `BT HID Stream (${clean.length} chars): First key [0x00, 0x00, ${firstHidHex}, ...]`;
-
-      state.lastCommandText = state.transport === "ADB" ? adbCmd : btCmd;
-      document.getElementById("liveAdbCommand").textContent = adbCmd;
-      document.getElementById("liveHidPacket").textContent = btCmd;
-
-      if (state.transport === "ADB" && state.wifiOnline) {
-        fetch(`http://${getBridgeHost()}/text/${encodeURIComponent(clean)}`, { mode: "no-cors" }).catch(() => {});
-      }
-
-      state.tvAwake = true;
-      state.tvSearchQuery = clean;
-      document.getElementById("tvLastEventBanner").textContent =
-        `Typed "${clean}" via ${state.transport === "ADB" ? "ADB input text (%s)" : "Bluetooth HID Keyboard"}`;
-
-      pushLogEntry(`Text: "${clean}"`, adbCmd, `BT_HID_TEXT(${clean.length} chars)`);
-      renderAll();
-    }
-
-    function launchFireTvApp(pkgName, appTitle) {
-      triggerHaptic(30);
-      playClickTone(720);
-      flashRemoteLed();
-
-      if (!state.wifiOnline && state.transport === "ADB") {
-        state.transport = "BLUETOOTH";
-        document.getElementById("autoFallbackNotice").classList.remove("hidden");
-      }
-
-      const ipTarget = (document.getElementById("adbIpInput").value || "192.168.1.45:5555").trim();
-      const adbCmd = `adb -s ${ipTarget} shell monkey -p ${pkgName} -c android.intent.category.LAUNCHER 1`;
-      const btCmd = `BT HID Macro: HOME (0x4A) -> D-Pad Navigate -> SELECT (0x28) [${appTitle}]`;
-
-      state.lastCommandText = state.transport === "ADB" ? adbCmd : btCmd;
-      document.getElementById("liveAdbCommand").textContent = adbCmd;
-      document.getElementById("liveHidPacket").textContent = btCmd;
-
-      if (state.transport === "ADB" && state.wifiOnline) {
-        fetch(`http://${getBridgeHost()}/launch/${encodeURIComponent(pkgName)}`, { mode: "no-cors" }).catch(() => {});
-      }
-
-      state.tvAwake = true;
-      state.menuOpen = false;
-      const idx = TILES.findIndex(t => t.pkg === pkgName || t.title === appTitle);
-      state.focusedTile = idx >= 0 ? idx : 0;
-      state.openedTile = state.focusedTile;
-      state.isPlaying = true;
-
-      document.getElementById("tvLastEventBanner").textContent =
-        `Launched ${appTitle} (${pkgName}) via ${state.transport}`;
-
-      pushLogEntry(`Launch ${appTitle}`, adbCmd, `BT_MACRO(${appTitle})`);
-      renderAll();
-    }
-
-    function pushLogEntry(label, adbCmd, btShort) {
-      const now = new Date();
-      const timeStr = now.toTimeString().split(" ")[0];
-      state.logs.unshift({
-        time: timeStr,
-        transport: state.transport,
-        label,
-        cmd: state.transport === "ADB" ? adbCmd : btShort
-      });
-      if (state.logs.length > 25) state.logs.pop();
-    }
-
-    function updateVirtualTvState(actionKey, mapping) {
-      const banner = document.getElementById("tvLastEventBanner");
-
-      if (actionKey === "POWER") {
-        state.tvAwake = !state.tvAwake;
-        state.menuOpen = false;
-        banner.textContent = state.tvAwake
-          ? `Woke Fire TV Stick via ${mapping.adbName} (${mapping.adbCode})`
-          : `Sent Fire TV Stick to Standby via ${mapping.adbName} (${mapping.adbCode})`;
-        return;
-      }
-
-      if (actionKey === "WAKEUP") {
-        state.tvAwake = true;
-        banner.textContent = `Woke Fire TV Stick via ${mapping.adbName} (${mapping.adbCode})`;
-        return;
-      }
-
-      if (!state.tvAwake) {
-        if (actionKey === "SELECT" || actionKey === "HOME" || actionKey === "VOICE_ASSIST") {
-          state.tvAwake = true;
-          banner.textContent = `Woke Fire TV Stick via ${mapping.label}`;
-        }
-        return;
-      }
-
-      switch (actionKey) {
-        case "UP":
-          if (state.openedTile === null && state.focusedTile >= 3) {
-            state.focusedTile -= 3;
-          }
-          break;
-        case "DOWN":
-          if (state.openedTile === null && state.focusedTile <= 2) {
-            state.focusedTile += 3;
-          }
-          break;
-        case "LEFT":
-          if (state.openedTile === null && state.focusedTile % 3 !== 0) {
-            state.focusedTile -= 1;
-          } else if (state.openedTile !== null) {
-            state.progressPct = Math.max(0, state.progressPct - 5);
-          }
-          break;
-        case "RIGHT":
-          if (state.openedTile === null && state.focusedTile % 3 !== 2) {
-            state.focusedTile += 1;
-          } else if (state.openedTile !== null) {
-            state.progressPct = Math.min(100, state.progressPct + 5);
-          }
-          break;
-        case "SELECT":
-          if (state.menuOpen) {
-            state.menuOpen = false;
-          } else if (state.openedTile === null) {
-            state.openedTile = state.focusedTile;
-            state.isPlaying = true;
-          } else {
-            state.isPlaying = !state.isPlaying;
-          }
-          break;
-        case "BACK":
-          if (state.menuOpen) {
-            state.menuOpen = false;
-          } else if (state.openedTile !== null) {
-            state.openedTile = null;
-          }
-          break;
-        case "HOME":
-          state.menuOpen = false;
-          state.openedTile = null;
-          state.focusedTile = 0;
-          break;
-        case "MENU":
-          state.menuOpen = !state.menuOpen;
-          break;
-        case "SEARCH":
-        case "VOICE_ASSIST":
-          document.getElementById("remoteTextInput").focus();
-          break;
-        case "BACKSPACE":
-          state.tvSearchQuery = state.tvSearchQuery.slice(0, -1);
-          document.getElementById("remoteTextInput").value = state.tvSearchQuery;
-          break;
-        case "PLAY_PAUSE":
-          state.isPlaying = !state.isPlaying;
-          break;
-        case "REWIND":
-          state.progressPct = Math.max(0, state.progressPct - 10);
-          break;
-        case "FAST_FORWARD":
-          state.progressPct = Math.min(100, state.progressPct + 10);
-          break;
-        case "VOL_UP":
-          state.muted = false;
-          state.volume = Math.min(100, state.volume + 5);
-          break;
-        case "VOL_DOWN":
-          state.muted = false;
-          state.volume = Math.max(0, state.volume - 5);
-          break;
-        case "MUTE":
-          state.muted = !state.muted;
-          break;
-      }
-
-      const modeTag = state.transport === "ADB" ? `ADB keyevent ${mapping.adbCode}` : `BT HID ${mapping.hidHex}`;
-      banner.textContent = `Executed ${mapping.label} [${modeTag}]`;
-    }
-
-    function flashRemoteLed() {
-      const led = document.getElementById("remoteLed");
-      led.classList.add("scale-150", "bg-white");
-      setTimeout(() => {
-        led.classList.remove("scale-150", "bg-white");
-      }, 130);
+      showToast(`Launching ${name}...`);
     }
 
     // ============================================================================
-    // 5. STEP 3 SWIPE TOUCHPAD ENGINE (Canvas Gesture Trail & Delta Resolver)
+    // 5. TOUCHPAD CANVAS ENGINE
     // ============================================================================
-    function initTouchpadCanvas() {
+    function initTouchpad() {
       const canvas = document.getElementById("touchpadCanvas");
       if (!canvas) return;
       const ctx = canvas.getContext("2d");
       let dragging = false;
-      let startX = 0;
-      let startY = 0;
+      let startX = 0, startY = 0;
 
-      function drawGridBackground() {
+      function drawBg() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.strokeStyle = "rgba(148, 163, 184, 0.12)";
+        ctx.strokeStyle = "rgba(148, 163, 184, 0.1)";
         ctx.lineWidth = 1;
-        for (let i = 32; i < canvas.width; i += 32) {
+        for (let i = 35; i < canvas.width; i += 35) {
           ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
           ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
         }
       }
-
-      drawGridBackground();
+      drawBg();
 
       function getCoords(e) {
         const rect = canvas.getBoundingClientRect();
@@ -1559,17 +501,17 @@ HTTPServer(("0.0.0.0", 8765), BridgeHandler).serve_forever()</pre>
         const pt = getCoords(e);
         startX = pt.x;
         startY = pt.y;
-        drawGridBackground();
+        drawBg();
         ctx.fillStyle = "#38bdf8";
         ctx.beginPath();
-        ctx.arc(startX, startY, 5, 0, Math.PI * 2);
+        ctx.arc(startX, startY, 6, 0, Math.PI * 2);
         ctx.fill();
       });
 
       canvas.addEventListener("pointermove", (e) => {
         if (!dragging) return;
         const pt = getCoords(e);
-        drawGridBackground();
+        drawBg();
         ctx.strokeStyle = "#818cf8";
         ctx.lineWidth = 3;
         ctx.lineCap = "round";
@@ -1577,11 +519,6 @@ HTTPServer(("0.0.0.0", 8765), BridgeHandler).serve_forever()</pre>
         ctx.moveTo(startX, startY);
         ctx.lineTo(pt.x, pt.y);
         ctx.stroke();
-
-        ctx.fillStyle = "#38bdf8";
-        ctx.beginPath();
-        ctx.arc(pt.x, pt.y, 4, 0, Math.PI * 2);
-        ctx.fill();
       });
 
       window.addEventListener("pointerup", (e) => {
@@ -1593,9 +530,9 @@ HTTPServer(("0.0.0.0", 8765), BridgeHandler).serve_forever()</pre>
         const dist = Math.hypot(dx, dy);
         const readout = document.getElementById("touchpadDeltaReadout");
 
-        if (dist < 12) {
-          readout.textContent = `Tap (Δ:${Math.round(dist)}px) -> SELECT`;
-          sendRemoteAction("SELECT");
+        if (dist < 14) {
+          readout.textContent = "Tap -> Select";
+          sendKey("SELECT");
         } else {
           let dir = "UP";
           if (Math.abs(dx) > Math.abs(dy)) {
@@ -1603,648 +540,190 @@ HTTPServer(("0.0.0.0", 8765), BridgeHandler).serve_forever()</pre>
           } else {
             dir = dy > 0 ? "DOWN" : "UP";
           }
-          readout.textContent = `Δx:${dx}, Δy:${dy} -> ${dir}`;
-          sendRemoteAction(dir, { x1: startX, y1: startY, x2: pt.x, y2: pt.y });
+          readout.textContent = `Swipe ${dir}`;
+          sendSwipe(startX, startY, pt.x, pt.y, dir);
         }
-        setTimeout(drawGridBackground, 450);
+        setTimeout(drawBg, 400);
       });
     }
 
     // ============================================================================
-    // 6. UI RENDERING
+    // 6. UI & MODAL RENDERING
     // ============================================================================
-    function renderAll() {
-      // 1. Remote Top Badge & LED
-      const led = document.getElementById("remoteLed");
-      const badge = document.getElementById("remoteModeBadge");
-      if (state.transport === "ADB") {
-        led.className = "w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_#38bdf8] transition-all duration-150";
-        badge.textContent = "ADB Wi-Fi (:5555)";
-        badge.className = "text-[11px] font-semibold uppercase tracking-wider text-sky-400 mono";
+    function render() {
+      const active = getActiveProfile();
+      document.getElementById("topDeviceName").textContent = active.name;
+
+      // Top dot color reflects mode
+      const dot = document.getElementById("topLedDot");
+      if (state.mode === "ADB") {
+        dot.className = "w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_#38bdf8]";
       } else {
-        led.className = "w-2.5 h-2.5 rounded-full bg-indigo-400 shadow-[0_0_8px_#818cf8] transition-all duration-150";
-        badge.textContent = "Bluetooth HID";
-        badge.className = "text-[11px] font-semibold uppercase tracking-wider text-indigo-400 mono";
+        dot.className = "w-2.5 h-2.5 rounded-full bg-indigo-400 shadow-[0_0_8px_#818cf8]";
       }
 
-      // Step 3 D-Pad vs Swipe Touchpad Toggle State
+      // Touchpad vs D-Pad
       document.getElementById("dpadContainer").classList.toggle("hidden", state.touchpadMode);
       document.getElementById("touchpadContainer").classList.toggle("hidden", !state.touchpadMode);
-      document.getElementById("touchpadContainer").classList.toggle("flex", state.touchpadMode);
-      document.getElementById("touchpadToggleLabel").textContent = state.touchpadMode
-        ? "Switch to Classic D-Pad"
-        : "Switch to Swipe Touchpad (Step 3)";
-      document.getElementById("healthInputModeBadge").textContent = state.touchpadMode
-        ? "Swipe Touchpad"
-        : "D-Pad Ring";
+      document.getElementById("touchpadIcon").textContent = state.touchpadMode ? "⭕" : "👆";
+      document.getElementById("touchpadText").textContent = state.touchpadMode ? "D-Pad" : "Touchpad";
 
-      // Step 4 Macro Recorder UI & Saved Macro Buttons
-      const recBtn = document.getElementById("btnRecordMacro");
-      const recPill = document.getElementById("macroRecStatusPill");
-      const recPreview = document.getElementById("recordedStepsPreview");
-      recPill.classList.toggle("hidden", !state.recordingMacro);
-      if (state.recordingMacro) {
-        recBtn.textContent = "⏹ Stop Recording";
-        recBtn.className = "px-3 py-1.5 rounded-lg bg-rose-600 text-white text-xs font-semibold transition";
-        recPreview.textContent = state.recordedBuffer.length > 0
-          ? `Recorded (${state.recordedBuffer.length}): ${state.recordedBuffer.join(" → ")}`
-          : "Press any remote buttons on the left to record steps...";
-      } else {
-        recBtn.textContent = "🔴 Record New Macro";
-        recBtn.className = "px-3 py-1.5 rounded-lg bg-rose-600/30 hover:bg-rose-600/50 border border-rose-500/40 text-rose-200 text-xs font-semibold transition";
-        recPreview.textContent = state.recordedBuffer.length > 0
-          ? `Ready to save (${state.recordedBuffer.length} keys): ${state.recordedBuffer.join(" → ")}`
-          : "Click \"Record New Macro\", press remote buttons on the left, then save!";
-      }
-
-      const macroListEl = document.getElementById("macroButtonsList");
-      macroListEl.innerHTML = state.macros.map(m => {
-        const codes = m.steps.map(k => KEY_MAP[k] ? KEY_MAP[k].adbCode : 23).join(" ");
+      // Render Devices in Modal
+      const listEl = document.getElementById("modalProfilesList");
+      listEl.innerHTML = state.profiles.map(p => {
+        const isCurrent = p.id === state.activeProfileId;
+        const borderCls = isCurrent ? "border-sky-500 bg-sky-950/40 text-white" : "border-slate-800 bg-slate-950/60 text-slate-300";
         return `
-          <button type="button" data-macro-id="${m.id}" class="macro-run-btn p-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/50 text-left transition flex flex-col justify-between">
-            <div class="text-xs font-semibold text-amber-200 truncate">${m.name}</div>
-            <div class="text-[10px] text-slate-400 mono mt-1 truncate">Keys: ${m.steps.join(" → ")} (${codes})</div>
-          </button>
-        `;
-      }).join("");
-
-      document.querySelectorAll(".macro-run-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const mid = btn.getAttribute("data-macro-id");
-          const found = state.macros.find(x => x.id === mid);
-          if (found) executeMacroSequence(found);
-        });
-      });
-
-      // Step 3 Link Health Telemetry & Descriptor View
-      document.getElementById("healthChannelValue").textContent = state.transport === "ADB"
-        ? "TCP :5555 (ADB)"
-        : "BT L2CAP 0x0013 (HID)";
-      document.getElementById("pingLatencyBadge").textContent = `${state.pingMs} ms`;
-      document.getElementById("hidDescriptorCode").textContent = HID_DESCRIPTORS[state.activeDescriptor];
-      document.getElementById("btnDescKeyboard").className = state.activeDescriptor === "KEYBOARD"
-        ? "px-2.5 py-1 rounded text-[11px] font-medium bg-indigo-600 text-white"
-        : "px-2.5 py-1 rounded text-[11px] font-medium text-slate-400 hover:text-white";
-      document.getElementById("btnDescConsumer").className = state.activeDescriptor === "CONSUMER"
-        ? "px-2.5 py-1 rounded text-[11px] font-medium bg-indigo-600 text-white"
-        : "px-2.5 py-1 rounded text-[11px] font-medium text-slate-400 hover:text-white";
-
-      // Active Profile Name on Remote & Virtual TV Header
-      const activeProf = state.profiles.find(p => p.id === state.activeProfileId) || state.profiles[0];
-      if (activeProf) {
-        document.getElementById("remoteActiveProfileName").textContent = activeProf.name;
-        document.getElementById("tvDeviceBadge").textContent = activeProf.name;
-      }
-
-      // Render Saved Device Profile Pills
-      const profContainer = document.getElementById("deviceProfilesList");
-      profContainer.innerHTML = state.profiles.map(p => {
-        const isActive = p.id === state.activeProfileId;
-        const cls = isActive
-          ? "bg-sky-600/30 border-sky-400 text-white font-semibold"
-          : "bg-slate-900 hover:bg-slate-800 border-slate-700/80 text-slate-300";
-        const modeIcon = p.transport === "ADB" ? "🛜" : "🔹";
-        return `
-          <button type="button" data-profile-id="${p.id}" class="profile-pill px-2.5 py-1 rounded-lg border text-xs flex items-center gap-1.5 transition ${cls}">
-            <span>${modeIcon}</span>
-            <span>${p.name}</span>
-            <span class="text-[10px] mono text-slate-400">(${p.ip})</span>
-          </button>
-        `;
-      }).join("");
-
-      document.querySelectorAll(".profile-pill").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const pid = btn.getAttribute("data-profile-id");
-          const found = state.profiles.find(x => x.id === pid);
-          if (found) {
-            state.activeProfileId = found.id;
-            state.transport = found.transport;
-            state.wifiOnline = found.wifiOnline !== false;
-            state.pingMs = found.transport === "ADB" ? 12 : 6;
-            document.getElementById("adbIpInput").value = found.ip;
-            document.getElementById("autoFallbackNotice").classList.toggle("hidden", state.wifiOnline);
-            showToast(`Switched profile to ${found.name}`);
-            renderAll();
-          }
-        });
-      });
-
-      // 2. Transport Cards & Wi-Fi Status Pill
-      const modeBtnAdb = document.getElementById("modeBtnAdb");
-      const modeBtnBt = document.getElementById("modeBtnBluetooth");
-      if (state.transport === "ADB") {
-        modeBtnAdb.className = "text-left p-3.5 rounded-xl border transition flex items-start justify-between gap-3 bg-sky-950/40 border-sky-500/70 shadow-sm";
-        modeBtnBt.className = "text-left p-3.5 rounded-xl border transition flex items-start justify-between gap-3 bg-slate-800/40 border-slate-700/70 hover:border-slate-600";
-      } else {
-        modeBtnAdb.className = "text-left p-3.5 rounded-xl border transition flex items-start justify-between gap-3 bg-slate-800/40 border-slate-700/70 hover:border-slate-600";
-        modeBtnBt.className = "text-left p-3.5 rounded-xl border transition flex items-start justify-between gap-3 bg-indigo-950/40 border-indigo-500/70 shadow-sm";
-      }
-
-      const wifiPill = document.getElementById("wifiStatusPill");
-      const wifiDropBtn = document.getElementById("btnSimulateWifiDrop");
-      const tileNetSub = document.getElementById("tileNetworkSub");
-      if (state.wifiOnline) {
-        const ip = (document.getElementById("adbIpInput").value || "192.168.1.45:5555").trim();
-        wifiPill.textContent = `Wi-Fi Online (${ip})`;
-        wifiPill.className = "text-[11px] font-medium px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-500/30";
-        wifiDropBtn.textContent = "⚡ Simulate Fire TV Wi-Fi Drop";
-        tileNetSub.textContent = "Wi-Fi Connected";
-        tileNetSub.className = "text-[10px] text-slate-400";
-      } else {
-        wifiPill.textContent = "Wi-Fi Disconnected (Offline Mode)";
-        wifiPill.className = "text-[11px] font-medium px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-300 border border-rose-500/30";
-        wifiDropBtn.textContent = "🔄 Restore Fire TV Wi-Fi";
-        tileNetSub.textContent = "Wi-Fi Offline (BT Active)";
-        tileNetSub.className = "text-[10px] text-amber-400";
-      }
-
-      // 3. Virtual Fire TV Screen & Live Search Box
-      document.getElementById("tvSleepOverlay").classList.toggle("hidden", state.tvAwake);
-      document.getElementById("tvMenuDrawer").classList.toggle("hidden", !state.menuOpen);
-      document.getElementById("tvSearchText").textContent = state.tvSearchQuery
-        ? `"${state.tvSearchQuery}"`
-        : "(empty — type above)";
-
-      const effectiveVol = state.muted ? 0 : state.volume;
-      document.getElementById("tvVolBar").style.width = `${effectiveVol}%`;
-      document.getElementById("tvVolText").textContent = state.muted ? "MUTE" : `${state.volume}%`;
-      document.getElementById("tvVolIcon").textContent = state.muted || state.volume === 0 ? "🔇" : "🔊";
-
-      const homeGrid = document.getElementById("tvHomeGrid");
-      const appView = document.getElementById("tvAppView");
-      const breadcrumb = document.getElementById("tvBreadcrumb");
-      const coordLabel = document.getElementById("tvFocusCoord");
-
-      if (state.openedTile === null) {
-        homeGrid.classList.remove("hidden");
-        appView.classList.add("hidden");
-        breadcrumb.textContent = "Home Launcher";
-        const row = Math.floor(state.focusedTile / 3) + 1;
-        const col = (state.focusedTile % 3) + 1;
-        coordLabel.textContent = `Focus: Tile [${row}, ${col}]`;
-
-        document.querySelectorAll(".tv-tile").forEach((el, idx) => {
-          if (idx === state.focusedTile) {
-            el.className = "tv-tile p-3 rounded-xl border transition cursor-pointer bg-slate-800/95 border-sky-400 ring-2 ring-sky-400/40 scale-[1.02]";
-          } else {
-            el.className = "tv-tile p-3 rounded-xl border transition cursor-pointer bg-slate-900/60 border-slate-800 hover:border-slate-700";
-          }
-        });
-      } else {
-        homeGrid.classList.add("hidden");
-        appView.classList.remove("hidden");
-        const activeTile = TILES[state.openedTile];
-        breadcrumb.textContent = `Home > ${activeTile.title}`;
-        coordLabel.textContent = `App Open (Press Back/Home)`;
-        document.getElementById("tvActiveAppTitle").textContent = activeTile.title;
-        document.getElementById("tvActiveAppDesc").textContent = activeTile.desc;
-
-        const playBadge = document.getElementById("tvPlaybackBadge");
-        if (state.isPlaying) {
-          playBadge.textContent = "▶ Playing";
-          playBadge.className = "px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
-        } else {
-          playBadge.textContent = "⏸ Paused";
-          playBadge.className = "px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30";
-        }
-        document.getElementById("tvScrubberBar").style.width = `${state.progressPct}%`;
-        const totalMins = Math.floor((state.progressPct / 100) * 45);
-        document.getElementById("tvTimeCurrent").textContent = `${String(totalMins).padStart(2, "0")}:00`;
-      }
-
-      // 4. Command Log List
-      const logContainer = document.getElementById("commandLogList");
-      if (state.logs.length === 0) {
-        logContainer.innerHTML = `<div class="text-slate-500 py-2">No commands dispatched yet. Click any remote button on the left!</div>`;
-      } else {
-        logContainer.innerHTML = state.logs.map(item => {
-          const pillClass = item.transport === "ADB"
-            ? "bg-sky-500/20 text-sky-300 border-sky-500/30"
-            : "bg-indigo-500/20 text-indigo-300 border-indigo-500/30";
-          return `
-            <div class="flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg bg-slate-950/70 border border-slate-800/80">
-              <div class="flex items-center gap-2 min-w-0">
-                <span class="text-slate-500 shrink-0">${item.time}</span>
-                <span class="px-1.5 py-0.5 rounded text-[10px] border shrink-0 ${pillClass}">${item.transport}</span>
-                <span class="text-slate-200 font-medium truncate">${item.label}</span>
-              </div>
-              <code class="text-[11px] text-slate-400 truncate">${item.cmd}</code>
+          <button type="button" data-select-id="${p.id}" class="w-full p-2.5 rounded-2xl border text-left flex items-center justify-between text-xs transition ${borderCls}">
+            <div class="truncate">
+              <div class="font-bold truncate">${p.name}</div>
+              <div class="text-[10px] mono text-slate-400 truncate">${p.ip}</div>
             </div>
-          `;
-        }).join("");
-      }
-    }
+            ${isCurrent ? '<span class="text-sky-400 text-xs font-bold">✓ Active</span>' : ''}
+          </button>
+        `;
+      }).join("");
 
-    function populateKeycodeReferenceTable() {
-      const tbody = document.getElementById("keycodeTableBody");
-      tbody.innerHTML = Object.values(KEY_MAP).map(k => `
-        <tr class="hover:bg-slate-800/40">
-          <td class="py-2 pr-3 font-sans font-medium text-slate-200">${k.label}</td>
-          <td class="py-2 px-3 text-sky-300">${k.adbName}</td>
-          <td class="py-2 px-3 text-right text-emerald-300">${k.adbCode}</td>
-          <td class="py-2 pl-3 text-right text-indigo-300">${k.hidHex}</td>
-        </tr>
-      `).join("");
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById("toastBanner");
-      toast.textContent = msg;
-      toast.classList.remove("hidden");
-      setTimeout(() => toast.classList.add("hidden"), 2200);
-    }
-
-    function copyTextToClipboard(text, message) {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(() => showToast(message)).catch(() => fallbackCopy(text, message));
-      } else {
-        fallbackCopy(text, message);
-      }
-    }
-
-    function fallbackCopy(text, message) {
-      const ta = document.createElement("textarea");
-      ta.value = text;
-      document.body.appendChild(ta);
-      ta.select();
-      try { document.execCommand("copy"); } catch (e) {}
-      document.body.removeChild(ta);
-      showToast(message);
+      document.querySelectorAll("[data-select-id]").forEach(b => {
+        b.addEventListener("click", () => {
+          state.activeProfileId = b.getAttribute("data-select-id");
+          saveState();
+          document.getElementById("deviceModal").classList.add("hidden");
+          render();
+        });
+      });
     }
 
     // ============================================================================
-    // 7. EVENT LISTENERS & INITIALIZATION
+    // 7. INITIALIZATION
     // ============================================================================
     window.addEventListener("DOMContentLoaded", () => {
-      // Auto-populate Phone Bridge URL if served via HTTP from firetv_bridge.py
-      if (window.location.protocol.startsWith("http") && window.location.port === "8765") {
-        document.getElementById("bridgeHostInput").value = window.location.origin;
-      }
+      loadPersistedState();
+      initTouchpad();
 
-      loadSavedProfiles();
-      populateKeycodeReferenceTable();
-      initTouchpadCanvas();
-
-      // Attach listeners to all remote buttons
+      // Button listeners
       document.querySelectorAll("[data-action]").forEach(btn => {
+        btn.addEventListener("click", () => sendKey(btn.getAttribute("data-action")));
+      });
+
+      document.querySelectorAll("[data-launch-pkg]").forEach(btn => {
         btn.addEventListener("click", () => {
-          const action = btn.getAttribute("data-action");
-          sendRemoteAction(action);
+          launchApp(btn.getAttribute("data-launch-pkg"), btn.getAttribute("data-launch-name"));
         });
       });
 
-      // BONUS FEATURE: Voice Command Chips & SpeechRecognition
-      document.querySelectorAll(".voice-chip").forEach(chip => {
-        chip.addEventListener("click", () => {
-          const phrase = chip.getAttribute("data-voice-phrase");
-          processVoiceCommand(phrase);
-        });
+      // Touchpad toggle
+      document.getElementById("btnToggleTouchpad").addEventListener("click", () => {
+        state.touchpadMode = !state.touchpadMode;
+        playClick();
+        haptic();
+        render();
       });
 
-      document.getElementById("btnStartVoice").addEventListener("click", () => {
-        sendRemoteAction("VOICE_ASSIST");
+      // Voice assistant
+      document.getElementById("btnVoiceAssist").addEventListener("click", () => {
+        sendKey("VOICE_ASSIST");
         const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRec) {
           try {
             const rec = new SpeechRec();
             rec.lang = "en-US";
-            document.getElementById("voiceBtnLabel").textContent = "Listening...";
+            document.getElementById("voiceLabel").textContent = "Listening...";
             rec.onresult = (ev) => {
-              const transcript = ev.results[0][0].transcript;
-              document.getElementById("voiceBtnLabel").textContent = "Speak Voice Command";
-              processVoiceCommand(transcript);
+              const text = ev.results[0][0].transcript;
+              document.getElementById("voiceLabel").textContent = "Voice Assistant";
+              sendText(text);
             };
             rec.onerror = () => {
-              document.getElementById("voiceBtnLabel").textContent = "Speak Voice Command";
-              processVoiceCommand("Open Netflix");
+              document.getElementById("voiceLabel").textContent = "Voice Assistant";
             };
             rec.start();
           } catch (e) {
-            processVoiceCommand("Open Netflix");
+            document.getElementById("voiceLabel").textContent = "Voice Assistant";
           }
-        } else {
-          processVoiceCommand("Open Netflix");
         }
       });
 
-      document.getElementById("btnToggleHaptics").addEventListener("click", () => {
-        state.hapticsEnabled = !state.hapticsEnabled;
-        document.getElementById("hapticsIcon").textContent = state.hapticsEnabled ? "📳" : "📴";
-        if (state.hapticsEnabled) triggerHaptic(40);
-        showToast(state.hapticsEnabled ? "Phone haptic vibration enabled" : "Phone haptic vibration disabled");
+      // Fast search bar
+      document.getElementById("btnFastSendText").addEventListener("click", () => {
+        const inp = document.getElementById("fastSearchInput");
+        sendText(inp.value);
+        inp.value = "";
       });
-
-      // Step 4 Macro Recorder & Config Export Listeners
-      document.getElementById("btnRecordMacro").addEventListener("click", () => {
-        state.recordingMacro = !state.recordingMacro;
-        if (state.recordingMacro) {
-          state.recordedBuffer = [];
-          showToast("Recording started! Press remote buttons on the left.");
-        } else {
-          showToast(`Recording paused (${state.recordedBuffer.length} keys captured).`);
-        }
-        renderAll();
-      });
-
-      document.getElementById("btnSaveMacro").addEventListener("click", () => {
-        const nameInput = document.getElementById("macroNameInput");
-        const name = (nameInput.value || "").trim() || `⚡ Custom Macro #${state.macros.length + 1}`;
-        const steps = state.recordedBuffer.length > 0 ? [...state.recordedBuffer] : ["HOME", "DOWN", "SELECT"];
-        state.macros.push({
-          id: "macro_" + Date.now(),
-          name,
-          steps
-        });
-        state.recordingMacro = false;
-        state.recordedBuffer = [];
-        nameInput.value = "";
-        persistProfiles();
-        showToast(`Saved macro "${name}" (${steps.join(" → ")})!`);
-        renderAll();
-      });
-
-      document.getElementById("btnCopyConfigJson").addEventListener("click", () => {
-        const payload = JSON.stringify({
-          app: "FireControl Studio",
-          version: "5.0-Bonus",
-          profiles: state.profiles,
-          macros: state.macros
-        }, null, 2);
-        copyTextToClipboard(payload, "Copied FireControl JSON config to clipboard!");
-      });
-
-      document.getElementById("btnExportConfig").addEventListener("click", () => {
-        const payload = JSON.stringify({
-          app: "FireControl Studio",
-          version: "5.0-Bonus",
-          profiles: state.profiles,
-          macros: state.macros
-        }, null, 2);
-        const blob = new Blob([payload], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "firecontrol_config.json";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        showToast("Downloaded firecontrol_config.json backup!");
-      });
-
-      // Step 3 Toggle D-Pad vs Swipe Touchpad
-      document.getElementById("btnToggleTouchpad").addEventListener("click", () => {
-        state.touchpadMode = !state.touchpadMode;
-        playClickTone(590);
-        showToast(state.touchpadMode ? "Swipe Touchpad activated! Drag or tap the pad." : "Classic D-Pad Ring activated.");
-        renderAll();
-      });
-
-      document.getElementById("btnWalkthroughTouchpad").addEventListener("click", () => {
-        state.touchpadMode = true;
-        document.getElementById("tabBtnSimulator").click();
-        renderAll();
-        const tp = document.getElementById("touchpadContainer");
-        tp.classList.add("highlight-pulse");
-        setTimeout(() => tp.classList.remove("highlight-pulse"), 2200);
-      });
-
-      // Step 3 Bluetooth HID Descriptor Switcher & Ping Test
-      document.getElementById("btnDescKeyboard").addEventListener("click", () => {
-        state.activeDescriptor = "KEYBOARD";
-        renderAll();
-      });
-      document.getElementById("btnDescConsumer").addEventListener("click", () => {
-        state.activeDescriptor = "CONSUMER";
-        renderAll();
-      });
-      document.getElementById("btnCopyDescriptor").addEventListener("click", () => {
-        copyTextToClipboard(HID_DESCRIPTORS[state.activeDescriptor], "Copied Bluetooth HID Descriptor bytes!");
-      });
-      document.getElementById("btnPingTest").addEventListener("click", () => {
-        playClickTone(760);
-        state.pingMs = state.transport === "ADB"
-          ? Math.floor(10 + Math.random() * 6)
-          : Math.floor(4 + Math.random() * 4);
-        const ip = (document.getElementById("adbIpInput").value || "192.168.1.45:5555").trim();
-        pushLogEntry(
-          `Link Ping (${state.pingMs}ms)`,
-          `adb -s ${ip} shell echo ping_ok`,
-          `BT_L2CAP_ECHO_RSP(${state.pingMs}ms)`
-        );
-        showToast(`Link healthy: ${state.pingMs} ms round-trip latency`);
-        renderAll();
-      });
-
-      // Attach listeners to all Step 2 Quick-App Launch buttons
-      document.querySelectorAll("[data-launch-pkg]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const pkg = btn.getAttribute("data-launch-pkg");
-          const name = btn.getAttribute("data-launch-name");
-          launchFireTvApp(pkg, name);
-        });
-      });
-
-      // Step 2 Live Text Keyboard Listeners
-      document.getElementById("btnSendText").addEventListener("click", () => {
-        const val = document.getElementById("remoteTextInput").value;
-        sendTextToFireTv(val);
-      });
-      document.getElementById("remoteTextInput").addEventListener("keydown", (e) => {
+      document.getElementById("fastSearchInput").addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
-          sendTextToFireTv(e.target.value);
-        }
-      });
-      document.getElementById("btnTriggerSearch").addEventListener("click", () => {
-        sendRemoteAction("SEARCH");
-      });
-      document.getElementById("btnSendBackspace").addEventListener("click", () => {
-        sendRemoteAction("BACKSPACE");
-      });
-
-      // Step 2 Save New Device Profile Listener
-      document.getElementById("btnSaveProfile").addEventListener("click", () => {
-        const nameInput = document.getElementById("profileNameInput");
-        const name = (nameInput.value || "").trim();
-        const ip = (document.getElementById("adbIpInput").value || "192.168.1.45:5555").trim();
-        if (!name) {
-          showToast("Enter a room or device name first!");
-          nameInput.focus();
-          return;
-        }
-        const id = "custom_" + Date.now();
-        state.profiles.push({
-          id,
-          name,
-          ip,
-          transport: state.transport,
-          wifiOnline: state.wifiOnline
-        });
-        state.activeProfileId = id;
-        nameInput.value = "";
-        persistProfiles();
-        showToast(`Saved profile "${name}"!`);
-        renderAll();
-      });
-
-      // Allow clicking directly on Virtual TV tiles
-      document.querySelectorAll(".tv-tile").forEach((tile, index) => {
-        tile.addEventListener("click", () => {
-          state.focusedTile = index;
-          sendRemoteAction("SELECT");
-        });
-      });
-
-      // Transport Mode Switchers
-      document.getElementById("modeBtnAdb").addEventListener("click", () => {
-        if (!state.wifiOnline) {
-          showToast("Wi-Fi is currently simulated offline. Restore Wi-Fi or use Bluetooth HID!");
-          return;
-        }
-        state.transport = "ADB";
-        state.pingMs = 12;
-        document.getElementById("autoFallbackNotice").classList.add("hidden");
-        renderAll();
-      });
-
-      document.getElementById("modeBtnBluetooth").addEventListener("click", () => {
-        state.transport = "BLUETOOTH";
-        state.pingMs = 6;
-        renderAll();
-      });
-
-      // Simulate Wi-Fi Outage & Automatic Bluetooth Fallback
-      document.getElementById("btnSimulateWifiDrop").addEventListener("click", () => {
-        state.wifiOnline = !state.wifiOnline;
-        const notice = document.getElementById("autoFallbackNotice");
-        if (!state.wifiOnline) {
-          state.transport = "BLUETOOTH";
-          state.pingMs = 6;
-          notice.classList.remove("hidden");
-          showToast("Wi-Fi dropped! Automatically switched to Offline Bluetooth HID mode.");
-        } else {
-          state.transport = "ADB";
-          state.pingMs = 12;
-          notice.classList.add("hidden");
-          showToast("Fire TV Wi-Fi restored! Switched back to ADB TCP/IP (:5555).");
-        }
-        renderAll();
-      });
-
-      // Web Bluetooth API Pairing Button
-      document.getElementById("btnWebBluetoothPair").addEventListener("click", async () => {
-        state.transport = "BLUETOOTH";
-        state.pingMs = 6;
-        renderAll();
-        if (navigator.bluetooth && navigator.bluetooth.requestDevice) {
-          try {
-            const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true });
-            showToast(`Paired with Bluetooth device: ${device.name || "Fire TV Stick"}`);
-          } catch (err) {
-            showToast("BluetoothHID simulation active in sandbox preview.");
-          }
-        } else {
-          showToast("Bluetooth HID simulation mode active in browser preview.");
+          sendText(e.target.value);
+          e.target.value = "";
         }
       });
 
-      // Top Tab Navigation
-      const tabViews = {
-        simulator: document.getElementById("viewSimulator"),
-        walkthrough: document.getElementById("viewWalkthrough"),
-        bridge: document.getElementById("viewBridge")
-      };
-      document.querySelectorAll("[data-tab]").forEach(tabBtn => {
-        tabBtn.addEventListener("click", () => {
-          const target = tabBtn.getAttribute("data-tab");
-          Object.keys(tabViews).forEach(k => {
-            tabViews[k].classList.toggle("hidden", k !== target);
-            tabViews[k].classList.toggle("flex", k === target);
-          });
-          document.querySelectorAll("[data-tab]").forEach(b => {
-            if (b.getAttribute("data-tab") === target) {
-              b.className = "px-3 py-1.5 rounded-md text-xs font-medium transition-colors bg-sky-600 text-white shadow";
-            } else {
-              b.className = "px-3 py-1.5 rounded-md text-xs font-medium transition-colors text-slate-300 hover:text-white";
-            }
-          });
-        });
+      // Modals
+      const devModal = document.getElementById("deviceModal");
+      const setModal = document.getElementById("settingsModal");
+
+      document.getElementById("btnOpenDeviceModal").addEventListener("click", () => devModal.classList.remove("hidden"));
+      document.getElementById("btnCloseDeviceModal").addEventListener("click", () => devModal.classList.add("hidden"));
+
+      document.getElementById("btnOpenSettingsModal").addEventListener("click", () => setModal.classList.remove("hidden"));
+      document.getElementById("btnCloseSettingsModal").addEventListener("click", () => setModal.classList.add("hidden"));
+
+      // Add new device
+      document.getElementById("btnSaveNewDevice").addEventListener("click", () => {
+        const nameInp = document.getElementById("newDeviceName");
+        const ipInp = document.getElementById("newDeviceIp");
+        const name = nameInp.value.trim() || "My Fire TV";
+        let ip = ipInp.value.trim() || "192.168.1.45";
+        if (!ip.includes(":")) ip += ":5555";
+
+        const newId = "dev_" + Date.now();
+        state.profiles.push({ id: newId, name, ip });
+        state.activeProfileId = newId;
+        nameInp.value = "";
+        ipInp.value = "";
+        saveState();
+        devModal.classList.add("hidden");
+        showToast(`Added ${name}!`);
+        render();
       });
 
-      // Highlight Component Triggers inside Walkthrough Tab
-      document.querySelectorAll(".highlight-trigger").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const target = btn.getAttribute("data-highlight");
-          document.getElementById("tabBtnSimulator").click();
-          let el = document.querySelector(".remote-shell");
-          if (target === "inspector") el = document.getElementById("cardInspector");
-          if (target === "transport") el = document.getElementById("cardTransport");
-          if (target === "tv") el = document.getElementById("cardVirtualTv");
-          if (target === "keyboard") el = document.getElementById("cardKeyboard");
-          if (target === "quickapps") el = document.getElementById("cardQuickApps");
-          if (target === "descriptor") el = document.getElementById("cardBtDescriptor");
-          if (target === "macros") el = document.getElementById("cardMacroAutomation");
-          if (el) {
-            el.classList.add("highlight-pulse");
-            setTimeout(() => el.classList.remove("highlight-pulse"), 2200);
-          }
-        });
+      // Settings Mode Switcher
+      document.getElementById("btnSetModeAdb").addEventListener("click", () => {
+        state.mode = "ADB";
+        saveState();
+        document.getElementById("btnSetModeAdb").className = "p-3 rounded-2xl border text-left transition bg-sky-950/40 border-sky-500/70";
+        document.getElementById("btnSetModeBt").className = "p-3 rounded-2xl border text-left transition bg-slate-950 border-slate-800 hover:border-slate-700";
+        showToast("Switched to Wi-Fi ADB");
+        render();
       });
 
-      // Sound Toggle
-      document.getElementById("soundToggleBtn").addEventListener("click", () => {
-        state.soundEnabled = !state.soundEnabled;
-        document.getElementById("soundIcon").textContent = state.soundEnabled ? "🔊" : "🔇";
-        showToast(state.soundEnabled ? "Remote click audio enabled" : "Remote click audio muted");
+      document.getElementById("btnSetModeBt").addEventListener("click", () => {
+        state.mode = "BLUETOOTH";
+        saveState();
+        document.getElementById("btnSetModeAdb").className = "p-3 rounded-2xl border text-left transition bg-slate-950 border-slate-800 hover:border-slate-700";
+        document.getElementById("btnSetModeBt").className = "p-3 rounded-2xl border text-left transition bg-indigo-950/40 border-indigo-500/70";
+        showToast("Switched to Bluetooth HID");
+        render();
       });
 
-      // Copy & Clear Buttons
-      document.getElementById("btnCopyLastCmd").addEventListener("click", () => {
-        copyTextToClipboard(state.lastCommandText, "Copied last command to clipboard!");
-      });
-      document.getElementById("btnClearLog").addEventListener("click", () => {
-        state.logs = [];
-        renderAll();
-      });
-      document.getElementById("btnCopyBridgeScript").addEventListener("click", () => {
-        const code = document.getElementById("pythonBridgeCode").textContent;
-        copyTextToClipboard(code, "Copied complete firetv_bridge.py script!");
+      // Audio/Haptic toggles
+      document.getElementById("btnToggleHapticsModal").addEventListener("click", (e) => {
+        state.haptics = !state.haptics;
+        e.target.textContent = state.haptics ? "Enabled" : "Disabled";
+        e.target.className = state.haptics
+          ? "px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold text-[11px]"
+          : "px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 font-semibold text-[11px]";
       });
 
-      // Keyboard Shortcuts for Live Testing
-      window.addEventListener("keydown", (e) => {
-        if (document.activeElement && document.activeElement.tagName === "INPUT") return;
-        const keyMap = {
-          ArrowUp: "UP",
-          ArrowDown: "DOWN",
-          ArrowLeft: "LEFT",
-          ArrowRight: "RIGHT",
-          Enter: "SELECT",
-          Backspace: "BACK",
-          Escape: "BACK",
-          h: "HOME",
-          H: "HOME",
-          m: "MENU",
-          M: "MENU",
-          " ": "PLAY_PAUSE",
-          "+": "VOL_UP",
-          "=": "VOL_UP",
-          "-": "VOL_DOWN",
-          "_": "VOL_DOWN",
-          "0": "MUTE"
-        };
-        if (keyMap[e.key]) {
-          e.preventDefault();
-          sendRemoteAction(keyMap[e.key]);
-        }
+      document.getElementById("btnToggleAudioModal").addEventListener("click", (e) => {
+        state.audio = !state.audio;
+        e.target.textContent = state.audio ? "Enabled" : "Disabled";
+        e.target.className = state.audio
+          ? "px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold text-[11px]"
+          : "px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 font-semibold text-[11px]";
       });
 
-      // Seed initial state with one welcome event so the inspector is immediately rich
-      sendRemoteAction("UP");
-      state.focusedTile = 0;
-      renderAll();
+      render();
     });
   </script>
 </body>
