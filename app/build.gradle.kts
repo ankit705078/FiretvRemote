@@ -27,13 +27,26 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/LICENSE"
+            excludes += "META-INF/LICENSE.txt"
+            excludes += "META-INF/license.txt"
+            excludes += "META-INF/NOTICE"
+            excludes += "META-INF/NOTICE.txt"
+            excludes += "META-INF/notice.txt"
+            excludes += "META-INF/INDEX.LIST"
+            pickFirsts += "META-INF/**"
+        }
+    }
 }
 
 dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    // Pure-Kotlin embedded ADB client (zero PC or Python needed!)
     implementation("dev.mobile:dadb:1.2.7")
-    // Coroutines for background socket / Bluetooth dispatch
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 }
