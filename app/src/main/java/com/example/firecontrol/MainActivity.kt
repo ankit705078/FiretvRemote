@@ -1,18 +1,18 @@
 package com.example.firecontrol
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 
-/**
- * MainActivity hosts the self-contained `firetv_remote.html` interface in a full-screen
- * WebView and injects `window.FireControlNative` so every tap on the UI directly invokes
- * either the embedded pure-Kotlin ADB client or the native Android BluetoothHidDevice profile.
- */
 class MainActivity : AppCompatActivity() {
 
     private lateinit var webView: WebView
@@ -23,10 +23,14 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Initialize Embedded ADB Client
         adbClient = EmbeddedAdbClient(this)
         btHidHelper = AndroidBluetoothHidHelper(this)
-        btHidHelper.registerHidProfile()
 
+        // Safely check and request Bluetooth permissions without crashing
+        checkAndRequestPermissions()
+
+        // Setup WebView
         webView = WebView(this).apply {
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
@@ -38,6 +42,40 @@ class MainActivity : AppCompatActivity() {
         }
 
         setContentView(webView)
+    }
+
+    private fun checkAndRequestPermissions() {
+        val permissions = mutableListOf<String>()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                permissions.add(Manifest.permission.BLUETOOTH_CONNECT)
+            }
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADVERTISE) != PackageManager.PERMISSION_GRANTED) {
+                permissions.add(Manifest.permission.BLUETOOTH_ADVERTISE)
+            }
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            permissions.add(Manifest.permission.RECORD_AUDIO)
+        }
+
+        if (permissions.isNotEmpty()) {
+            ActivityCompat.requestPermissions(this, permissions.toTypedArray(), 101)
+        } else {
+            initBluetoothSafely()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        initBluetoothSafely()
+    }
+
+    private fun initBluetoothSafely() {
+        try {
+            btHidHelper.registerHidProfile()
+        } catch (e: Exception) {
+            // Fails gracefully if device does not support Bluetooth HID or Bluetooth is toggled off
+        }
     }
 
     inner class FireControlBridge {
@@ -64,7 +102,9 @@ class MainActivity : AppCompatActivity() {
 
         @JavascriptInterface
         fun sendBluetoothHidKey(usageId: Int) {
-            btHidHelper.sendHidKey(usageId)
+            try {
+                btHidHelper.sendHidKey(usageId)
+            } catch (e: Exception) {}
         }
     }
 }
