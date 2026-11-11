@@ -22,7 +22,7 @@ class AndroidBluetoothHidHelper(private val context: Context) {
     private var connectedHost: BluetoothDevice? = null
     private var advertiser: BluetoothLeAdvertiser? = null
 
-    // Standard Bluetooth HID Service UUID (0x1812) — Makes Fire TV recognize the phone as a Keyboard
+    // Standard Bluetooth HID Service UUID (0x1812)
     private val HID_UUID = ParcelUuid(UUID.fromString("00001812-0000-1000-8000-00805f9b34fb"))
 
     private val keyboardDescriptor = byteArrayOf(
@@ -54,7 +54,7 @@ class AndroidBluetoothHidHelper(private val context: Context) {
     fun registerHidProfile() {
         val adapter = BluetoothAdapter.getDefaultAdapter() ?: return
 
-        // 1. Start Bluetooth Advertising as a Wireless Keyboard
+        // 1. Broadcast as Bluetooth Wireless Keyboard
         try {
             advertiser = adapter.bluetoothLeAdvertiser
             val settings = AdvertiseSettings.Builder()
@@ -72,11 +72,9 @@ class AndroidBluetoothHidHelper(private val context: Context) {
             advertiser?.startAdvertising(settings, data, object : AdvertiseCallback() {})
         } catch (e: Exception) {}
 
-        // 2. Register Bluetooth HID Device Profile Proxy
+        // 2. Connect to Bluetooth HID Profile Service
         try {
             adapter.getProfileProxy(context, object : BluetoothProfile.ServiceListener {
-                override fun onConnectionStateChanged(profile: Int, state: Int) {}
-
                 override fun onServiceConnected(profile: Int, proxy: BluetoothProfile) {
                     if (profile == BluetoothProfile.HID_DEVICE) {
                         hidDevice = proxy as BluetoothHidDevice
